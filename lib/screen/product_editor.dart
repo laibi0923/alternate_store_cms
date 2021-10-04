@@ -806,7 +806,7 @@ class _ProductEditorState extends State<ProductEditor> {
           ),
         
           Positioned(
-            top: 15,
+            top: 60,
             right: 70,
             child: GestureDetector(
               onTap: () => _uploadProduct(),
@@ -823,7 +823,7 @@ class _ProductEditorState extends State<ProductEditor> {
            ),
 
           Positioned(
-            top: 15,
+            top: 60,
             right: 20,
             child: GestureDetector(
               onTap: () => Navigator.pop(context),
