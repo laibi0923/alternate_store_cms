@@ -187,6 +187,7 @@ class _ProductEditorState extends State<ProductEditor> {
 
   //  Add Product Image
   Future<void> _addImage() async {
+    
     try{
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
