@@ -184,7 +184,8 @@ class _CatergoryControllerState extends State<CatergoryController> {
             padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index){
-              return GestureDetector(
+              return InkWell(
+                splashColor: Colors.transparent,
                 onTap: () => _selectItem(index),
                 child: Container(
                   margin: const EdgeInsets.only(top: 20, bottom: 20),

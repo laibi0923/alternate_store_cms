@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:alternate_store_cms/model/product_model.dart';
 import 'package:alternate_store_cms/randomstring_gender.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProductDatabase {
 
@@ -36,7 +39,7 @@ class ProductDatabase {
   }
 
   //  上載貨品圖片
-  Future<List> uploadProductImage(List imageList) async {
+  Future<List> uploadProductImage(List<XFile> imageList) async {
     
     List imageUrl = [];
 
@@ -44,7 +47,7 @@ class ProductDatabase {
 
       Reference storageRef = FirebaseStorage.instance.ref().child('product/${randomStringGender(20, true).toUpperCase()}.jpg');
       
-      final UploadTask uploadTask = storageRef.putFile(imageList[i]);
+      final UploadTask uploadTask = storageRef.putFile(File(imageList[i].path));
 
       final TaskSnapshot downloadUrl = (await uploadTask);
 

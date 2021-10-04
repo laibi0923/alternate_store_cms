@@ -28,7 +28,7 @@ class _ProductEditorState extends State<ProductEditor> {
   bool _inStock = false;
   bool _refundable = false;
 
-  final List<File> _imageList = [];
+  List<XFile>? _imageList = [];
   final List _sizeList = [];
   final List<Map<String, dynamic>> _colorList = [];
   List<CategoryModel> _categoryList = [];
@@ -103,7 +103,7 @@ class _ProductEditorState extends State<ProductEditor> {
   //  Upload Product to Firestore
   void _uploadProduct(){
 
-    if(_imageList.isEmpty){
+    if(_imageList!.isEmpty){
       CustomSnackBar().show(context, '最少一張產品圖片');
       return;
     }
@@ -151,7 +151,7 @@ class _ProductEditorState extends State<ProductEditor> {
       _tempCategoryList.add(_categoryList[i].name);
     }
 
-    ProductDatabase().uploadProductImage(_imageList).then((_imageUrlList) {
+    ProductDatabase().uploadProductImage(_imageList!).then((_imageUrlList) {
 
       ProductDatabase().uploadColorImage(_colorList).then((_colorUrlList) {
 
@@ -187,18 +187,24 @@ class _ProductEditorState extends State<ProductEditor> {
 
   //  Add Product Image
   Future<void> _addImage() async {
-    
-    try{
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-      if(image == null){
-        return;
-      } else {
-        final File imageTemporary = File(image.path);
-        setState(() {
-          _imageList.add(imageTemporary);
-        });
+    try{
+
+      _imageList = (await ImagePicker().pickMultiImage());
+
+      if(_imageList!.isNotEmpty){
+        setState(() {});
       }
+      // final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      // if(image == null){
+      //   return;
+      // } else {
+      //   final File imageTemporary = File(image.path);
+      //   setState(() {
+      //     _imageList.add(imageTemporary);
+      //   });
+      // }
     } on PlatformException catch (e){
       // ignore: avoid_print
       print('Failed to pick image : $e');
@@ -207,7 +213,7 @@ class _ProductEditorState extends State<ProductEditor> {
 
   _removeProductImage(int index){
     setState(() {
-      _imageList.removeAt(index);  
+      _imageList!.removeAt(index);  
     });
   }
 
@@ -219,11 +225,12 @@ class _ProductEditorState extends State<ProductEditor> {
         return inputValueDialog(context, '輸入呎碼', 'eg : XL / XXL / 41...');
       }
     );
-    setState(() {
-      if(result.isNotEmpty || result.isNotEmpty){
+    // ignore: unnecessary_null_comparison
+    if(result != null && result.isNotEmpty) {
+      setState(() {
         _sizeList.add(result.toUpperCase().trim());  
-      }
-    });
+      });
+    }
   }
 
   _removeSize(int index){
@@ -257,15 +264,14 @@ class _ProductEditorState extends State<ProductEditor> {
       }
     );
 
-    setState(() {
-      if(result.isNotEmpty){
+    if(result != null && result.isNotEmpty){
+      setState(() {
         _colorList.add({
           "COLOR_IMAGE" : imageTemporary,
           "COLOR_NAME" : result.toUpperCase().trim(),
         });  
-        
-      }  
-    });
+      });
+    }  
   
   }
 
@@ -278,8 +284,7 @@ class _ProductEditorState extends State<ProductEditor> {
   //  Add Product Categoty
   Future<void> _addCategory() async {
 
-    List<CategoryModel> selectedList = 
-      await Navigator.push(context, MaterialPageRoute(builder: (context) => CatergoryController(selectOpen: true, selectedList: _categoryList,)));
+    List<CategoryModel> selectedList = await Navigator.push(context, MaterialPageRoute(builder: (context) => CatergoryController(selectOpen: true, selectedList: _categoryList,)));
 
     // ignore: unnecessary_null_comparison
     if(selectedList != null){
@@ -342,503 +347,501 @@ class _ProductEditorState extends State<ProductEditor> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: const Color(backgroundDark),
-        body: Stack(
-          children: [
+    return Scaffold(
+      backgroundColor: const Color(backgroundDark),
+      body: Stack(
+        children: [
 
-            ListView(
-              shrinkWrap: false,
-              physics: const BouncingScrollPhysics(),
-              children: [
+          ListView(
+            shrinkWrap: false,
+            physics: const BouncingScrollPhysics(),
+            children: [
     
-                const Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Text('新增商品', style: TextStyle(fontSize: 22)),
-                ),
+              const Padding(
+                padding: EdgeInsets.all(20),
+                child: Text('新增商品', style: TextStyle(fontSize: 22)),
+              ),
     
-                // Product Image
-                GestureDetector(
-                  onTap: () => _addImage(),
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff2f2f2f),
-                      borderRadius: BorderRadius.circular(7)
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-                          child: Row(
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                  '貨品圖片',
+              // Product Image
+              GestureDetector(
+                onTap: () => _addImage(),
+                child: Container(
+                  margin: const EdgeInsets.only(left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff2f2f2f),
+                    borderRadius: BorderRadius.circular(7)
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+                        child: Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                '貨品圖片',
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                color: const Color(backgroundDark),
+                                borderRadius: BorderRadius.circular(99)
+                              ),
+                              child: const Icon(Icons.add)
+                            )
+                          ],
+                        ),
+                      ),
+                      _imageList!.isEmpty ? 
+                      const Padding(
+                        padding: EdgeInsets.only(top: 75, bottom: 75),
+                        child: Center(
+                          child: Text('點撃新增'),
+                        ),
+                      ) :
+                      Container(
+                        margin: const EdgeInsets.only(top: 20, bottom: 20),
+                        height: 150,
+                        child: ListView.builder(
+                          itemCount: _imageList!.length,
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index){
+                            return GestureDetector(
+                              onTap: () => _removeProductImage(index),
+                              child: Container(
+                                height: 50,
+                                width: 150,
+                                margin: const EdgeInsets.only(left: 15),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(17),
+                                  image: DecorationImage(
+                                    image: FileImage(File(_imageList![index].path)),
+                                    fit: BoxFit.cover
+                                  )
                                 ),
                               ),
-                              Container(
-                                padding: const EdgeInsets.all(3),
-                                decoration: BoxDecoration(
-                                  color: const Color(backgroundDark),
-                                  borderRadius: BorderRadius.circular(99)
-                                ),
-                                child: const Icon(Icons.add)
-                              )
-                            ],
-                          ),
-                        ),
-                        _imageList.isEmpty ? 
-                        const Padding(
-                          padding: EdgeInsets.only(top: 75, bottom: 75),
-                          child: Center(
-                            child: Text('點撃新增'),
-                          ),
-                        ) :
-                        Container(
-                          margin: const EdgeInsets.only(top: 20, bottom: 20),
-                          height: 150,
-                          child: ListView.builder(
-                            itemCount: _imageList.length,
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, index){
-                              return GestureDetector(
-                                onTap: () => _removeProductImage(index),
-                                child: Container(
-                                  height: 50,
-                                  width: 150,
-                                  margin: const EdgeInsets.only(left: 15),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey,
-                                    borderRadius: BorderRadius.circular(17),
-                                    image: DecorationImage(
-                                      image: FileImage(_imageList[index]),
-                                      fit: BoxFit.cover
-                                    )
-                                  ),
-                                ),
-                              );
-                            }
-                          )
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                
-                // Product Number
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: CustomizeTextField(
-                    title: '貨品編號 (自動新增)',
-                    mTextEditingController: _productNumberController,
-                    isenabled: false,
-                    isPassword: false, 
-                    maxLine: 1, 
-                    minLine: 1,
-                  ),
-                ),
-    
-                // Product Name
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: CustomizeTextField(
-                    title: '貨品名稱',
-                    mTextEditingController: _productNameController, 
-                    isenabled: true, 
-                    isPassword: false, 
-                    minLine: 1,
-                    maxLine: 1, 
-                  ),
-                ),
-    
-                //  Description
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: CustomizeTextField(
-                    title: '貨品說明',
-                    mTextEditingController: _descriptionController,
-                    minLine: 4,
-                    isenabled: true, 
-                    isPassword: false, 
-                    maxLine: 4, 
-                    
-                  ),
-                ),
-    
-                //  Price & Discount Price
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Row(
-                    children: [
-    
-                      _buildPriceTextFiled(
-                        '價格',
-                        _priceController,
+                            );
+                          }
+                        )
                       ),
-    
-                      Container(
-                        width: 20,
-                      ),
-    
-                      _buildPriceTextFiled(
-                        '特價',
-                        _discountController,
-                      ),
-    
                     ],
                   ),
                 ),
+              ),
+              
+              // Product Number
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: CustomizeTextField(
+                  title: '貨品編號 (自動新增)',
+                  mTextEditingController: _productNumberController,
+                  isenabled: false,
+                  isPassword: false, 
+                  maxLine: 1, 
+                  minLine: 1,
+                ),
+              ),
     
-                // Size
-                GestureDetector(
-                  onTap: () => _addSize(),
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff2f2f2f),
-                      borderRadius: BorderRadius.circular(7)
+              // Product Name
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: CustomizeTextField(
+                  title: '貨品名稱',
+                  mTextEditingController: _productNameController, 
+                  isenabled: true, 
+                  isPassword: false, 
+                  minLine: 1,
+                  maxLine: 1, 
+                ),
+              ),
+    
+              //  Description
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: CustomizeTextField(
+                  title: '貨品說明',
+                  mTextEditingController: _descriptionController,
+                  minLine: 4,
+                  isenabled: true, 
+                  isPassword: false, 
+                  maxLine: 4, 
+                  
+                ),
+              ),
+    
+              //  Price & Discount Price
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Row(
+                  children: [
+    
+                    _buildPriceTextFiled(
+                      '價格',
+                      _priceController,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                         Padding(
-                           padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-                           child: Row(
-                             children: [
-                               const Expanded(
-                                 child: Text(
-                                   '呎碼',
-                                 ),
+    
+                    Container(
+                      width: 20,
+                    ),
+    
+                    _buildPriceTextFiled(
+                      '特價',
+                      _discountController,
+                    ),
+    
+                  ],
+                ),
+              ),
+    
+              // Size
+              GestureDetector(
+                onTap: () => _addSize(),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff2f2f2f),
+                    borderRadius: BorderRadius.circular(7)
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                       Padding(
+                         padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+                         child: Row(
+                           children: [
+                             const Expanded(
+                               child: Text(
+                                 '呎碼',
                                ),
-                               Container(
-                                 padding: const EdgeInsets.all(2),
-                                 decoration: BoxDecoration(
-                                   color: const Color(backgroundDark),
-                                   borderRadius: BorderRadius.circular(99)
-                                 ),
-                                 child: const Icon(Icons.add)
-                               )
-                             ],
-                           ),
+                             ),
+                             Container(
+                               padding: const EdgeInsets.all(2),
+                               decoration: BoxDecoration(
+                                 color: const Color(backgroundDark),
+                                 borderRadius: BorderRadius.circular(99)
+                               ),
+                               child: const Icon(Icons.add)
+                             )
+                           ],
                          ),
-                         _sizeList.isEmpty ? 
-                        const Padding(
-                          padding: EdgeInsets.only(top: 20, bottom: 40),
-                          child: Center(
-                            child: Text('點撃新增'),
-                          ),
-                        ):
-                        Container(
-                          margin: const EdgeInsets.only(top: 20, bottom: 20),
-                          height: 50,
-                          child: ListView.builder(
-                            itemCount: _sizeList.length,
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, index){
-                              return GestureDetector(
-                                onTap: () => _removeSize(index),
-                                child: Container(
-                                  height: 50,
-                                  width: 50,
-                                  margin: const EdgeInsets.only(left: 15),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.grey
-                                    ),
-                                    borderRadius: BorderRadius.circular(99)
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      _sizeList[index],
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    )
-                                  ),
-                                ),
-                              );
-                            }
-                          )
+                       ),
+                       _sizeList.isEmpty ? 
+                      const Padding(
+                        padding: EdgeInsets.only(top: 20, bottom: 40),
+                        child: Center(
+                          child: Text('點撃新增'),
                         ),
-                
-                      ],
-                    ),
-                  ),
-                ),
-               
-                // Color
-                GestureDetector(
-                  onTap: () => _addColor(),
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff2f2f2f),
-                      borderRadius: BorderRadius.circular(7)
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-                          child: Row(
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                '顏色',
-                                  style: TextStyle(fontWeight: FontWeight.bold)
-                              ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(2),
+                      ):
+                      Container(
+                        margin: const EdgeInsets.only(top: 20, bottom: 20),
+                        height: 50,
+                        child: ListView.builder(
+                          itemCount: _sizeList.length,
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index){
+                            return GestureDetector(
+                              onTap: () => _removeSize(index),
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                margin: const EdgeInsets.only(left: 15),
                                 decoration: BoxDecoration(
-                                  color: const Color(backgroundDark),
+                                  border: Border.all(
+                                    width: 1,
+                                    color: Colors.grey
+                                  ),
                                   borderRadius: BorderRadius.circular(99)
                                 ),
+                                child: Center(
+                                  child: Text(
+                                    _sizeList[index],
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  )
+                                ),
+                              ),
+                            );
+                          }
+                        )
+                      ),
+              
+                    ],
+                  ),
+                ),
+              ),
+             
+              // Color
+              GestureDetector(
+                onTap: () => _addColor(),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff2f2f2f),
+                    borderRadius: BorderRadius.circular(7)
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+                        child: Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                              '顏色',
+                                style: TextStyle(fontWeight: FontWeight.bold)
+                            ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                color: const Color(backgroundDark),
+                                borderRadius: BorderRadius.circular(99)
+                              ),
+                            child: const Icon(Icons.add)
+                            )
+                          ],
+                        ),
+                      ),
+                      _colorList.isEmpty ? 
+                      const Padding(
+                        padding: EdgeInsets.only(top: 20, bottom: 40),
+                        child: Center(
+                          child: Text('點撃新增')
+                        ),
+                      ) :
+                      Container(
+                        margin: const EdgeInsets.only(top: 20, bottom: 20),
+                        height: 80,
+                        child: ListView.builder(
+                          itemCount: _colorList.length,
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index){
+                            return GestureDetector(
+                              onTap: () => _removeColor(index),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 50,
+                                    width: 50,
+                                    margin: const EdgeInsets.only(left: 15),
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: FileImage(_colorList[index]['COLOR_IMAGE']),
+                                        fit: BoxFit.cover
+                                      ),
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Colors.grey
+                                      ),
+                                      borderRadius: BorderRadius.circular(99)
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 50,
+                                    margin: const EdgeInsets.only(left: 15),
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Center(
+                                      child: Text(
+                                        _colorList[index]['COLOR_NAME'],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                        )
+                      ),
+              
+                    ],
+                  ),
+                ),
+              ),
+             
+              // Tag
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: CustomizeTextField(
+                  title: '標籤',
+                  mTextEditingController: _tagController,
+                  isenabled: true, 
+                  isPassword: false, 
+                  maxLine: 1, 
+                  minLine: 1,
+                ),
+              ),
+    
+              // Category
+              GestureDetector(
+                onTap: () => _addCategory(),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff2f2f2f),
+                    borderRadius: BorderRadius.circular(7)
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+                        child: Row(
+                          children: [
+                            const Expanded(
+                              child: Text(
+                                '分類',
+                                style: TextStyle(fontWeight: FontWeight.bold)
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                color: const Color(backgroundDark),
+                                borderRadius: BorderRadius.circular(99)
+                              ),
                               child: const Icon(Icons.add)
-                              )
-                            ],
-                          ),
+                            )
+                          ],
                         ),
-                        _colorList.isEmpty ? 
-                        const Padding(
-                          padding: EdgeInsets.only(top: 20, bottom: 40),
-                          child: Center(
-                            child: Text('點撃新增')
-                          ),
-                        ) :
-                        Container(
-                          margin: const EdgeInsets.only(top: 20, bottom: 20),
-                          height: 80,
-                          child: ListView.builder(
-                            itemCount: _colorList.length,
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, index){
-                              return GestureDetector(
-                                onTap: () => _removeColor(index),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      height: 50,
-                                      width: 50,
-                                      margin: const EdgeInsets.only(left: 15),
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: FileImage(_colorList[index]['COLOR_IMAGE']),
-                                          fit: BoxFit.cover
-                                        ),
-                                        border: Border.all(
-                                          width: 1,
-                                          color: Colors.grey
-                                        ),
-                                        borderRadius: BorderRadius.circular(99)
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 50,
-                                      margin: const EdgeInsets.only(left: 15),
-                                      padding: const EdgeInsets.only(top: 10),
-                                      child: Center(
-                                        child: Text(
-                                          _colorList[index]['COLOR_NAME'],
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        )
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                          )
+                      ),
+                      _categoryList.isEmpty ? const Padding(
+                        padding: EdgeInsets.only(top: 20, bottom: 40),
+                        child: Center(
+                          child: Text('點撃新增'),
                         ),
-                
-                      ],
-                    ),
-                  ),
-                ),
-               
-                // Tag
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: CustomizeTextField(
-                    title: '標籤',
-                    mTextEditingController: _tagController,
-                    isenabled: true, 
-                    isPassword: false, 
-                    maxLine: 1, 
-                    minLine: 1,
-                  ),
-                ),
-    
-                // Category
-                GestureDetector(
-                  onTap: () => _addCategory(),
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff2f2f2f),
-                      borderRadius: BorderRadius.circular(7)
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-                          child: Row(
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                  '分類',
-                                  style: TextStyle(fontWeight: FontWeight.bold)
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(2),
+                      ) :
+                      Container(
+                        margin: const EdgeInsets.only(top: 20, bottom: 20),
+                        height: 30,
+                        child: ListView.builder(
+                          itemCount: _categoryList.length,
+                          scrollDirection: Axis.horizontal,
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index){
+                            return GestureDetector(
+                              onTap: () => _removeCategory(index),
+                              child: Container(
+                                margin: const EdgeInsets.only(left: 15),
+                                padding: const EdgeInsets.only(left: 15, right: 15),
                                 decoration: BoxDecoration(
-                                  color: const Color(backgroundDark),
+                                  border: Border.all(
+                                    width: 1,
+                                    color: Colors.grey
+                                  ),
                                   borderRadius: BorderRadius.circular(99)
                                 ),
-                                child: const Icon(Icons.add)
-                              )
-                            ],
-                          ),
-                        ),
-                        _categoryList.isEmpty ? const Padding(
-                          padding: EdgeInsets.only(top: 20, bottom: 40),
-                          child: Center(
-                            child: Text('點撃新增'),
-                          ),
-                        ) :
-                        Container(
-                          margin: const EdgeInsets.only(top: 20, bottom: 20),
-                          height: 30,
-                          child: ListView.builder(
-                            itemCount: _categoryList.length,
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (context, index){
-                              return GestureDetector(
-                                onTap: () => _removeCategory(index),
-                                child: Container(
-                                  margin: const EdgeInsets.only(left: 15),
-                                  padding: const EdgeInsets.only(left: 15, right: 15),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.grey
-                                    ),
-                                    borderRadius: BorderRadius.circular(99)
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      _categoryList[index].name, 
-                                      style: const TextStyle(color: Colors.grey),
-                                    )
-                                  ),
+                                child: Center(
+                                  child: Text(
+                                    _categoryList[index].name, 
+                                    style: const TextStyle(color: Colors.grey),
+                                  )
                                 ),
-                              );
-                            }
-                          )
-                        ),
-                      ],
-                    ),
+                              ),
+                            );
+                          }
+                        )
+                      ),
+                    ],
                   ),
                 ),
+              ),
     
-                //  InStock Status
-                GestureDetector(
-                  onTap: () => _inStockStatus(),
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff2f2f2f),
-                      borderRadius: BorderRadius.circular(7)
-                    ),
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        const Expanded(
-                          child: Text('上架狀態')
-                        ),
-                        _inStock == true ? const Text('已上架') : const Text('未上架', style: TextStyle(color: Colors.redAccent),),
-                      ],
-                    )
+              //  InStock Status
+              GestureDetector(
+                onTap: () => _inStockStatus(),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff2f2f2f),
+                    borderRadius: BorderRadius.circular(7)
                   ),
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Text('上架狀態')
+                      ),
+                      _inStock == true ? const Text('已上架') : const Text('未上架', style: TextStyle(color: Colors.redAccent),),
+                    ],
+                  )
                 ),
+              ),
     
-                // refund
-                GestureDetector(
-                  onTap: () => _refundStatus(),
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xff2f2f2f),
-                      borderRadius: BorderRadius.circular(7)
-                    ),
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        const Expanded(
-                          child: Text('退款選擇')
-                        ),
-                        _refundable == true ? const Text('可退款', style: TextStyle(color: Colors.redAccent)) : const Text('不可退款'),
-                      ],
-                    )
+              // refund
+              GestureDetector(
+                onTap: () => _refundStatus(),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xff2f2f2f),
+                    borderRadius: BorderRadius.circular(7)
                   ),
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Text('退款選擇')
+                      ),
+                      _refundable == true ? const Text('可退款', style: TextStyle(color: Colors.redAccent)) : const Text('不可退款'),
+                    ],
+                  )
                 ),
+              ),
     
-                Container(
-                  height: 50,
-                )
+              Container(
+                height: 50,
+              )
     
-              ],
+            ],
+          ),
+        
+          Positioned(
+            top: 15,
+            right: 70,
+            child: GestureDetector(
+              onTap: () => _uploadProduct(),
+              child: Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: const Color(backgroundDark),
+                  borderRadius: BorderRadius.circular(999)
+                ),
+                child: const Icon(Icons.upload, color: Colors.grey)
+              )
             ),
-          
-            Positioned(
-              top: 15,
-              right: 70,
-              child: GestureDetector(
-                onTap: () => _uploadProduct(),
-                child: Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: const Color(backgroundDark),
-                    borderRadius: BorderRadius.circular(999)
-                  ),
-                  child: const Icon(Icons.upload, color: Colors.grey)
-                )
-              ),
-             ),
+           ),
 
-            Positioned(
-              top: 15,
-              right: 20,
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: const Color(backgroundDark),
-                    borderRadius: BorderRadius.circular(999)
-                  ),
-                  child: const Icon(Icons.close, color: Colors.grey,)
-                )
-              ),
-            )
-          
-          ],
-        ),
-      
+          Positioned(
+            top: 15,
+            right: 20,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: const Color(backgroundDark),
+                  borderRadius: BorderRadius.circular(999)
+                ),
+                child: const Icon(Icons.close, color: Colors.grey,)
+              )
+            ),
+          )
+        
+        ],
       ),
+    
     );
   }
 
