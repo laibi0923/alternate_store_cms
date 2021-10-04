@@ -1,4 +1,4 @@
-package com.example.alternate_store_cms
+package com.alternate.alternate_store_cms
 
 import io.flutter.embedding.android.FlutterActivity
 

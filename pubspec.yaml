@@ -43,7 +43,7 @@ dependencies:
   shared_preferences: 
   badges: 
   image_picker: 
-  permission_handler: 
+  # permission_handler: 
   flutter_slidable: 
   cached_network_image: 
 
