@@ -17,7 +17,7 @@ class PolicyService{
   }
 
   updatePrivatePolicy(String content){
-    _mFirestore.collection('policy').doc('private_policy').update({
+    _mFirestore.collection('policy').doc('private_policy').set({
       'LAST_MODIFY' : Timestamp.now(),
       'CONTENT' : content
     });
@@ -33,7 +33,7 @@ class PolicyService{
   }
 
   updateReturnPolicy(String content){
-    _mFirestore.collection('policy').doc('return_policy').update({
+    _mFirestore.collection('policy').doc('return_policy').set({
       'LAST_MODIFY' : Timestamp.now(),
       'CONTENT' : content
     });
