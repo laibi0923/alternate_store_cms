@@ -181,7 +181,7 @@ class _CatergoryControllerState extends State<CatergoryController> {
           ], 
           body: ListView.builder(
             itemCount: _categoryItemList.length,
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 200),
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index){
               return InkWell(
@@ -256,7 +256,9 @@ class _CatergoryControllerState extends State<CatergoryController> {
                 ),
               );
             }
-          )
+          ),
+
+
         ),
       ),
     );
