@@ -6,7 +6,7 @@ import 'package:alternate_store_cms/model/product_model.dart';
 import 'package:alternate_store_cms/randomstring_gender.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProductDatabase {
+class ProductDatabase { 
 
   final CollectionReference _productRef = FirebaseFirestore.instance.collection('product');
 

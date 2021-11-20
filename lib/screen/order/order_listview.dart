@@ -1,18 +1,18 @@
+import 'package:alternate_store_cms/screen/order/receive_details.dart';
 import 'package:flutter/material.dart';
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
-import 'package:alternate_store_cms/screen/receive_details.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-class ReceivedOrder extends StatefulWidget {
-  const ReceivedOrder({ Key? key }) : super(key: key);
+class OrderListView extends StatefulWidget {
+  const OrderListView({ Key? key }) : super(key: key);
 
   @override
-  _ReceivedOrderState createState() => _ReceivedOrderState();
+  _OrderListViewState createState() => _OrderListViewState();
 }
 
-class _ReceivedOrderState extends State<ReceivedOrder> {
+class _OrderListViewState extends State<OrderListView> {
   @override
   Widget build(BuildContext context) {
 

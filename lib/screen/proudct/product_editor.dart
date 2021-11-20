@@ -264,6 +264,7 @@ class _ProductEditorState extends State<ProductEditor> {
       }
     );
 
+    // ignore: unnecessary_null_comparison
     if(result != null && result.isNotEmpty){
       setState(() {
         _colorList.add({
