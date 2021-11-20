@@ -11,7 +11,7 @@ import 'package:alternate_store_cms/model/category_model.dart';
 import 'package:alternate_store_cms/model/product_model.dart';
 import 'package:alternate_store_cms/custom_snackbar.dart';
 import 'package:alternate_store_cms/randomstring_gender.dart';
-import 'package:alternate_store_cms/screen/catergory_controller.dart';
+import 'package:alternate_store_cms/screen/category/catergory_controller.dart';
 import 'package:alternate_store_cms/service/product_database.dart';
 import 'package:alternate_store_cms/inputvalue_dialog.dart';
 

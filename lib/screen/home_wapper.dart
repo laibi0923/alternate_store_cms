@@ -1,14 +1,16 @@
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
-import 'package:alternate_store_cms/screen/catergory_controller.dart';
-import 'package:alternate_store_cms/screen/coupon_controller.dart';
+import 'package:alternate_store_cms/screen/category/catergory_controller.dart';
+import 'package:alternate_store_cms/screen/coupon/coupon_controller.dart';
 import 'package:alternate_store_cms/screen/order/order_listview.dart';
-import 'package:alternate_store_cms/screen/private_policy.dart';
+import 'package:alternate_store_cms/screen/order/receive_details.dart';
+import 'package:alternate_store_cms/screen/policy/private_policy.dart';
+import 'package:alternate_store_cms/screen/policy/return_policy.dart';
 import 'package:alternate_store_cms/screen/proudct/product_listview.dart';
-import 'package:alternate_store_cms/screen/return_policy.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class HomeWapper extends StatelessWidget {
   const HomeWapper({ Key? key }) : super(key: key);
@@ -38,8 +40,8 @@ class HomeWapper extends StatelessWidget {
         shrinkWrap: true,
         children: [
           customHeader(),
-          functionButton(context),
-          newOrderListView(context),
+          _functionButton(context),
+          _orderListView(context),
         ],
       )
     );
@@ -68,7 +70,7 @@ Widget customHeader(){
   );
 }
 
-Widget functionButton(BuildContext context){
+Widget _functionButton(BuildContext context){
 
   var size = MediaQuery.of(context).size;
   const double itemHeight = 250;
@@ -93,58 +95,58 @@ Widget functionButton(BuildContext context){
       children: [
         GestureDetector(
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductListView())),
-          child: functionButtonItemView(
-            const Icon(Icons.widgets), 
+          child: _functionButtonItemView(
+            const Icon(Icons.widgets, size: 30,), 
             '商品管理'
           ),
         ),
         GestureDetector(
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const CatergoryController(selectOpen: false, selectedList: [],))),
-          child: functionButtonItemView(
-            const Icon(Icons.category_outlined), 
+          child: _functionButtonItemView(
+            const Icon(Icons.category_outlined, size: 30,), 
             '類別管理'
           ),
         ),
         GestureDetector(
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const CouponController())),
-          child: functionButtonItemView(
-            const Icon(Icons.card_giftcard), 
+          child: _functionButtonItemView(
+            const Icon(Icons.card_giftcard, size: 30,), 
             '優惠代碼'
           ),
         ),
         GestureDetector(
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const OrderListView())),
-          child: functionButtonItemView(
-            const Icon(Icons.inbox_rounded), 
+          child: _functionButtonItemView(
+            const Icon(Icons.inbox_rounded, size: 30,), 
             '訂單查詢'
           ),
         ),
 
         GestureDetector(
           onTap: (){},
-          child: functionButtonItemView(
-            const Icon(Icons.outbox_rounded), 
+          child: _functionButtonItemView(
+            const Icon(Icons.outbox_rounded, size: 30,), 
             '退貨管理'
           ),
         ),
         GestureDetector(
           onTap: (){},
-          child: functionButtonItemView(
-            const Icon(Icons.person), 
+          child: _functionButtonItemView(
+            const Icon(Icons.person, size: 30,), 
             '會員系統'
           ),
         ),
         GestureDetector(
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PrivatePolicy())),
-          child: functionButtonItemView(
-            const Icon(Icons.admin_panel_settings_outlined), 
+          child: _functionButtonItemView(
+            const Icon(Icons.admin_panel_settings_outlined, size: 30,), 
             '私人政策'
           ),
         ),
         GestureDetector(
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReturnPolicy())),
-          child: functionButtonItemView(
-            const Icon(Icons.admin_panel_settings_outlined), 
+          child: _functionButtonItemView(
+            const Icon(Icons.admin_panel_settings_outlined, size: 30,), 
             '退貨政策'
           ),
         ),
@@ -154,20 +156,20 @@ Widget functionButton(BuildContext context){
   );
 }
 
-Widget functionButtonItemView(Icon icon, String title){
+Widget _functionButtonItemView(Icon icon, String title){
   return Column(
     children: [
       Expanded(
-        child: icon
+        child: icon,
       ),
       Text(title)
     ],
   );
 }
 
-Widget newOrderListView(BuildContext context){
+Widget _orderListView(BuildContext context){
 
-  final orderReceiveData = Provider.of<List<OrderReceiveModel>>(context);
+  final orderReceiveModel = Provider.of<List<OrderReceiveModel>>(context);
   
   return Padding(
     padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
@@ -180,11 +182,19 @@ Widget newOrderListView(BuildContext context){
         ),
         ListView.builder(
           shrinkWrap: true,
-          itemCount: orderReceiveData.length,
+          itemCount: orderReceiveModel.length,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index){
-            return orderReceiveData[index].isComplete != true ?
-            neworderItemView() : Container();
+            return orderReceiveModel[index].isComplete != true ?
+            GestureDetector(
+              onTap: () => Navigator.push(
+                context, MaterialPageRoute(builder: (context) => ReceiveDetails(
+                  reference: orderReceiveModel[index].ref,
+                  docId: orderReceiveModel[index].docId
+                )
+              )),
+              child: _orderItemView(orderReceiveModel[index])
+            ) : Container();
           }
         )
       ],
@@ -192,7 +202,7 @@ Widget newOrderListView(BuildContext context){
   );
 }
 
-Widget neworderItemView(){
+Widget _orderItemView(OrderReceiveModel orderReceiveModel){
   return Container(
     decoration: BoxDecoration(
       color: const Color(primaryDark),
@@ -204,14 +214,13 @@ Widget neworderItemView(){
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          children: const [
-            Expanded(
+          children: [
+            const Expanded(
               child: Text('訂單日期 : ')
             ),
-            Text('YYYY / MM / DD')
-            // Text(
-            //   DateFormat('yyyy/MM/dd  kk:mm').format(DateTime.fromMicrosecondsSinceEpoch(orderReceiveData[index].orderDate.microsecondsSinceEpoch))
-            // ),
+            Text(
+              DateFormat('yyyy/MM/dd  kk:mm').format(DateTime.fromMicrosecondsSinceEpoch(orderReceiveModel.orderDate.microsecondsSinceEpoch))
+            ),
           ],
         ),
         Row(
@@ -219,25 +228,25 @@ Widget neworderItemView(){
             const Expanded(
               child: Text('訂單編號 : ')
             ),
-            // Text(orderReceiveData[index].orderNumber),
+            Text(orderReceiveModel.orderNumber),
           ],
         ),
-        Row(
-          children: [
-              const Expanded(
-              child: Text('訂單狀態 : ')
-            ),
-            // orderReceiveData[index].isComplete == true ?
-            // const Text(
-            //   '已完成',
-            //   style: TextStyle(color: Colors.blueAccent),
-            // ) :
-            const Text(
-              '未完成',
-              style: TextStyle(color: Colors.redAccent),
-            ),
-          ],
-        ),
+        // Row(
+        //   children: [
+        //       const Expanded(
+        //       child: Text('訂單狀態 : ')
+        //     ),
+        //     orderReceiveModel.isComplete == true ?
+        //     const Text(
+        //       '已完成',
+        //       style: TextStyle(color: Colors.blueAccent),
+        //     ) :
+        //     const Text(
+        //       '未完成',
+        //       style: TextStyle(color: Colors.redAccent),
+        //     ),
+        //   ],
+        // ),
       ],
     ),
   );

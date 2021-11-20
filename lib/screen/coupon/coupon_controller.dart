@@ -1,8 +1,8 @@
+import 'package:alternate_store_cms/screen/coupon/coupon_editor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/model/coupon_model.dart';
-import 'package:alternate_store_cms/screen/coupon_editor.dart';
 import 'package:alternate_store_cms/service/coupon_service.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';

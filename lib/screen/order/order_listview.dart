@@ -46,7 +46,7 @@ class _OrderListViewState extends State<OrderListView> {
             margin: const EdgeInsets.only(bottom: 10),
             decoration: BoxDecoration(
               color: const Color(primaryDark),
-              borderRadius: BorderRadius.circular(17)
+              borderRadius: BorderRadius.circular(7)
             ),
             child: GestureDetector(
               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiveDetails(

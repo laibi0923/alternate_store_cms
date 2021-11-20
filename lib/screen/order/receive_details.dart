@@ -65,89 +65,91 @@ class ReceiveDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: const Color(backgroundDark),
-        body: StreamBuilder(
-          stream: reference.snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) { 
-            return snapshot.data == null ? Container() :
-            Stack(
-              children: [
+    return Scaffold(
+      backgroundColor: const Color(backgroundDark),
+      appBar: AppBar(
+        elevation: 0,
 
-                ListView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  children: [
+      ),
+      body: StreamBuilder(
+        stream: reference.snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) { 
+          return snapshot.data == null ? Container() :
+          Stack(
+            children: [
 
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Text(
-                        '訂單#${snapshot.data['ORDER_NUMBER']}',
-                        style: const TextStyle(fontSize: 22),
-                      ),
+              ListView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                children: [
+
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Text(
+                      '訂單#${snapshot.data['ORDER_NUMBER']}',
+                      style: const TextStyle(fontSize: 22),
                     ),
-
-                    _buildOrderHeader(
-                      snapshot.data['ORDER_DATE'],
-                      snapshot.data['ORDER_NUMBER']
-                    ),
-
-                    _buildRecipientInfo(
-                      snapshot.data['RECIPIENT_INFO']['RECEIPIENT_NAME'],
-                      snapshot.data['RECIPIENT_INFO']['CONTACT'],
-                      snapshot.data['RECIPIENT_INFO']['UNIT_AND_BUILDING'],
-                      snapshot.data['RECIPIENT_INFO']['ESTATE'],
-                      snapshot.data['RECIPIENT_INFO']['DISTRICT']
-                    ),
-
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data['ORDER_PRODUCT'].length,
-                      padding: const EdgeInsets.only(top: 20),
-                      itemBuilder: (context, index){
-                        return GestureDetector(
-                          onTap: () => _onShipping(context, index, snapshot.data['ORDER_PRODUCT']),
-                          child: _buildProductItemView(snapshot.data['ORDER_PRODUCT'][index]),
-                        );
-                      },
-                    ),
-
-                    _buildSummary(
-                      snapshot.data['SUB_AMOUNT'], 
-                      snapshot.data['DISCOUNT_CODE'], 
-                      snapshot.data['DISCOUNT_AMOUNT'], 
-                      snapshot.data['SHIPPING_FREE'], 
-                      snapshot.data['TOTAL_AMOUNT'], 
-                      snapshot.data['PAYMENT_METHOD']
-                    ),
-   
-                    Container(height: 80,),
-                  ]
-                ),
-
-                Positioned(
-                  top: 15,
-                  right: 20,
-                  child: GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: const Color(backgroundDark),
-                        borderRadius: BorderRadius.circular(999)
-                      ),
-                      child: const Icon(Icons.close, color: Colors.grey,)
-                    )
                   ),
-                )
-              
-              ],
-            );
-          },
-        ),
+
+                  _buildOrderHeader(
+                    snapshot.data['ORDER_DATE'],
+                    snapshot.data['ORDER_NUMBER']
+                  ),
+
+                  _buildRecipientInfo(
+                    snapshot.data['RECIPIENT_INFO']['RECEIPIENT_NAME'],
+                    snapshot.data['RECIPIENT_INFO']['CONTACT'],
+                    snapshot.data['RECIPIENT_INFO']['UNIT_AND_BUILDING'],
+                    snapshot.data['RECIPIENT_INFO']['ESTATE'],
+                    snapshot.data['RECIPIENT_INFO']['DISTRICT']
+                  ),
+
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data['ORDER_PRODUCT'].length,
+                    padding: const EdgeInsets.only(top: 20),
+                    itemBuilder: (context, index){
+                      return GestureDetector(
+                        onTap: () => _onShipping(context, index, snapshot.data['ORDER_PRODUCT']),
+                        child: _buildProductItemView(snapshot.data['ORDER_PRODUCT'][index]),
+                      );
+                    },
+                  ),
+
+                  _buildSummary(
+                    snapshot.data['SUB_AMOUNT'], 
+                    snapshot.data['DISCOUNT_CODE'], 
+                    snapshot.data['DISCOUNT_AMOUNT'], 
+                    snapshot.data['SHIPPING_FREE'], 
+                    snapshot.data['TOTAL_AMOUNT'], 
+                    snapshot.data['PAYMENT_METHOD']
+                  ),
+   
+                  Container(height: 80,),
+                ]
+              ),
+
+              Positioned(
+                top: 15,
+                right: 20,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: const Color(backgroundDark),
+                      borderRadius: BorderRadius.circular(999)
+                    ),
+                    child: const Icon(Icons.close, color: Colors.grey,)
+                  )
+                ),
+              )
+            
+            ],
+          );
+        },
       ),
     );
   }
@@ -155,7 +157,7 @@ class ReceiveDetails extends StatelessWidget {
 
 Container _buildOrderHeader(Timestamp orderDate, String orderNumber){
   return Container(
-    padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+    padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
     margin: const EdgeInsets.only(top: 20),
     decoration: BoxDecoration(
       color: const Color(primaryDark),
@@ -187,7 +189,7 @@ Container _buildOrderHeader(Timestamp orderDate, String orderNumber){
 
 Container _buildRecipientInfo(String name, String phone, String building, String estate, String district){
   return Container(
-    padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+    padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
     margin: const EdgeInsets.only(top: 20),
     decoration: BoxDecoration(
       color: const Color(primaryDark),
@@ -312,7 +314,7 @@ Container _buildProductItemView(Map<String, dynamic> orderProductData){
                           margin: const EdgeInsets.only(right: 15),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(999),
-                            child: cachedNetworkImage(orderProductData['COLOR']['COLOR_IMAGE'])
+                            child: cachedNetworkImage(orderProductData['COLOR_IMAGE'])
                           ),
                         ),
 
@@ -431,7 +433,7 @@ Column _buildSummary(double subAmount, String discountCode, double discountAmoun
 
       CartSummaryItemView(
         title: '總計', 
-        value: 'HKD\$ $totalAmount}', 
+        value: 'HKD\$ $totalAmount', 
         isbold: true, 
         showAddBox: false
       ),
