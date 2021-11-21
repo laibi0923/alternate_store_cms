@@ -1,4 +1,5 @@
 import 'package:alternate_store_cms/constants.dart';
+import 'package:alternate_store_cms/currency_textview.dart';
 import 'package:alternate_store_cms/model/product_model.dart';
 import 'package:alternate_store_cms/screen/proudct/product_editor.dart';
 import 'package:alternate_store_cms/service/product_database.dart';
@@ -130,17 +131,17 @@ Widget productListItem(BuildContext context, ProductModel productModel){
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
-                    'HKD\$ ${productModel.price.toStringAsFixed(2)}',
-                    style: productModel.discountPrice == 0 ? 
+                  CurrencyTextView(
+                    value: productModel.price, 
+                    textStyle: productModel.discountPrice == 0 ? 
                     const TextStyle() : 
                     const TextStyle(decoration: TextDecoration.lineThrough)
                   ),
                   Container(width: 10,),
                   productModel.discountPrice == 0 ? const Text('') :
-                  Text(
-                    'HKD\$ ${productModel.discountPrice.toStringAsFixed(2)}',
-                    style: const TextStyle(color: Colors.redAccent),
+                  CurrencyTextView(
+                    value: productModel.discountPrice, 
+                    textStyle: const TextStyle(color: Colors.redAccent),
                   ),
                 ],
               )

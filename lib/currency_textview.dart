@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class CurrencyTextView extends StatelessWidget {
@@ -12,7 +11,7 @@ class CurrencyTextView extends StatelessWidget {
     final formatter = NumberFormat("###,###,###,##0.00", "en");
     String newText =  formatter.format(value);
     return Text(
-      '\$$newText',
+      'HKD\$ $newText',
       style: textStyle,
     );
   }

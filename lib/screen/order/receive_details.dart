@@ -1,3 +1,4 @@
+import 'package:alternate_store_cms/currency_textview.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -69,85 +70,64 @@ class ReceiveDetails extends StatelessWidget {
       backgroundColor: const Color(backgroundDark),
       appBar: AppBar(
         elevation: 0,
-
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            // Text('dsahdhosihaoi'),
+            const Spacer(),
+            IconButton(
+              onPressed: () => Navigator.pop(context), 
+              icon: const Icon(Icons.close, color: Colors.white)
+            )
+          ],
+        ),
       ),
       body: StreamBuilder(
         stream: reference.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) { 
           return snapshot.data == null ? Container() :
-          Stack(
+          ListView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.only(left: 20, right: 20),
             children: [
 
-              ListView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                children: [
-
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Text(
-                      '訂單#${snapshot.data['ORDER_NUMBER']}',
-                      style: const TextStyle(fontSize: 22),
-                    ),
-                  ),
-
-                  _buildOrderHeader(
-                    snapshot.data['ORDER_DATE'],
-                    snapshot.data['ORDER_NUMBER']
-                  ),
-
-                  _buildRecipientInfo(
-                    snapshot.data['RECIPIENT_INFO']['RECEIPIENT_NAME'],
-                    snapshot.data['RECIPIENT_INFO']['CONTACT'],
-                    snapshot.data['RECIPIENT_INFO']['UNIT_AND_BUILDING'],
-                    snapshot.data['RECIPIENT_INFO']['ESTATE'],
-                    snapshot.data['RECIPIENT_INFO']['DISTRICT']
-                  ),
-
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data['ORDER_PRODUCT'].length,
-                    padding: const EdgeInsets.only(top: 20),
-                    itemBuilder: (context, index){
-                      return GestureDetector(
-                        onTap: () => _onShipping(context, index, snapshot.data['ORDER_PRODUCT']),
-                        child: _buildProductItemView(snapshot.data['ORDER_PRODUCT'][index]),
-                      );
-                    },
-                  ),
-
-                  _buildSummary(
-                    snapshot.data['SUB_AMOUNT'], 
-                    snapshot.data['DISCOUNT_CODE'], 
-                    snapshot.data['DISCOUNT_AMOUNT'], 
-                    snapshot.data['SHIPPING_FREE'], 
-                    snapshot.data['TOTAL_AMOUNT'], 
-                    snapshot.data['PAYMENT_METHOD']
-                  ),
-   
-                  Container(height: 80,),
-                ]
+              _buildOrderHeader(
+                snapshot.data['ORDER_DATE'],
+                snapshot.data['ORDER_NUMBER']
               ),
 
-              Positioned(
-                top: 15,
-                right: 20,
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: const Color(backgroundDark),
-                      borderRadius: BorderRadius.circular(999)
-                    ),
-                    child: const Icon(Icons.close, color: Colors.grey,)
-                  )
-                ),
-              )
-            
-            ],
+              _buildRecipientInfo(
+                snapshot.data['RECIPIENT_INFO']['RECEIPIENT_NAME'],
+                snapshot.data['RECIPIENT_INFO']['CONTACT'],
+                snapshot.data['RECIPIENT_INFO']['UNIT_AND_BUILDING'],
+                snapshot.data['RECIPIENT_INFO']['ESTATE'],
+                snapshot.data['RECIPIENT_INFO']['DISTRICT']
+              ),
+
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: snapshot.data['ORDER_PRODUCT'].length,
+                padding: const EdgeInsets.only(top: 20),
+                itemBuilder: (context, index){
+                  return GestureDetector(
+                    onTap: () => _onShipping(context, index, snapshot.data['ORDER_PRODUCT']),
+                    child: _buildProductItemView(snapshot.data['ORDER_PRODUCT'][index]),
+                  );
+                },
+              ),
+
+              _buildSummary(
+                snapshot.data['SUB_AMOUNT'], 
+                snapshot.data['DISCOUNT_CODE'], 
+                snapshot.data['DISCOUNT_AMOUNT'], 
+                snapshot.data['SHIPPING_FREE'], 
+                snapshot.data['TOTAL_AMOUNT'], 
+                snapshot.data['PAYMENT_METHOD']
+              ),
+   
+              Container(height: 80,),
+            ]
           );
         },
       ),
@@ -332,25 +312,26 @@ Container _buildProductItemView(Map<String, dynamic> orderProductData){
                               
                               // 判斷如商品冇特價時不顯示, 相反則顥示正價 (刪除線)
                               orderProductData['DISCOUNT'] == 0 ? Container() :
-                              Text(
-                                'HKD\$ ' + orderProductData['PRICE'].toStringAsFixed(2),
-                                style: const TextStyle(
+                              CurrencyTextView(
+                                value: orderProductData['PRICE'], 
+                                textStyle: const TextStyle(
                                   fontSize: 11,
                                   decoration: TextDecoration.lineThrough
-                                ),
+                                )
                               ),
                               
                               //  判斷如商品冇特價時顯示正價, 相反以紅色顯示特價銀碼
                               orderProductData['DISCOUNT'] != 0 ?
-                              Text(
-                                'HKD\$ ' + orderProductData['DISCOUNT'].toStringAsFixed(2),
-                                style: const TextStyle(
+                              CurrencyTextView(
+                                value: orderProductData['DISCOUNT'], 
+                                textStyle: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.redAccent
-                                ),
+                                )
                               ) :
-                              Text(
-                                'HKD\$ ' + orderProductData['PRICE'].toStringAsFixed(2),
+                              CurrencyTextView(
+                                value: orderProductData['PRICE'], 
+                                textStyle: const TextStyle()
                               )
                       
                             ],
@@ -412,28 +393,28 @@ Column _buildSummary(double subAmount, String discountCode, double discountAmoun
 
       CartSummaryItemView(
         title: '小計', 
-        value: 'HKD\$ $subAmount}', 
+        value: 'HKD\$ ${subAmount.toStringAsFixed(2)}', 
         isbold: false, 
         showAddBox: false
       ),
 
       CartSummaryItemView(
         title: discountCode == '' ? '折扣' : '折扣 【$discountCode】',
-        value: '-HKD\$ $discountAmount', 
+        value: '-HKD\$ ${discountAmount.toStringAsFixed(2)}', 
         isbold: false, 
         showAddBox: false
       ),
 
       CartSummaryItemView(
         title: '運費', 
-        value: 'HKD\$ $shippingFree', 
+        value: 'HKD\$ ${shippingFree.toStringAsFixed(2)}', 
         isbold: false, 
         showAddBox: false
       ),
 
       CartSummaryItemView(
         title: '總計', 
-        value: 'HKD\$ $totalAmount', 
+        value: 'HKD\$ ${totalAmount.toStringAsFixed(2)}', 
         isbold: true, 
         showAddBox: false
       ),

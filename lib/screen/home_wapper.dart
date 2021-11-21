@@ -1,8 +1,9 @@
 import 'package:alternate_store_cms/constants.dart';
-import 'package:alternate_store_cms/currency_text.dart';
+import 'package:alternate_store_cms/currency_textview.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
 import 'package:alternate_store_cms/screen/category/catergory_controller.dart';
 import 'package:alternate_store_cms/screen/coupon/coupon_controller.dart';
+import 'package:alternate_store_cms/screen/member/member_listview.dart';
 import 'package:alternate_store_cms/screen/order/order_itemviews.dart';
 import 'package:alternate_store_cms/screen/order/order_listview.dart';
 import 'package:alternate_store_cms/screen/order/receive_details.dart';
@@ -162,7 +163,7 @@ Widget _functionButton(BuildContext context){
           ),
         ),
         GestureDetector(
-          onTap: (){},
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MemberListView())),
           child: _functionButtonItemView(
             const Icon(Icons.person, size: 30,), 
             '會員系統'
