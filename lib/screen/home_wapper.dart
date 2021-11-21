@@ -1,7 +1,9 @@
 import 'package:alternate_store_cms/constants.dart';
+import 'package:alternate_store_cms/currency_text.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
 import 'package:alternate_store_cms/screen/category/catergory_controller.dart';
 import 'package:alternate_store_cms/screen/coupon/coupon_controller.dart';
+import 'package:alternate_store_cms/screen/order/order_itemviews.dart';
 import 'package:alternate_store_cms/screen/order/order_listview.dart';
 import 'package:alternate_store_cms/screen/order/receive_details.dart';
 import 'package:alternate_store_cms/screen/policy/private_policy.dart';
@@ -39,7 +41,7 @@ class HomeWapper extends StatelessWidget {
       body: ListView(
         shrinkWrap: true,
         children: [
-          customHeader(),
+          _customHeader(context),
           _functionButton(context),
           _orderListView(context),
         ],
@@ -48,21 +50,51 @@ class HomeWapper extends StatelessWidget {
   }
 }
 
-Widget customHeader(){
+Widget _customHeader(BuildContext context){
+
+  final orderReceiveModel = Provider.of<List<OrderReceiveModel>>(context);
+  
+  double turnover = 0;
+  DateTime now = DateTime.now();
+  final formatter = NumberFormat("###,###,###,##0", "en");
+
+  if(orderReceiveModel != null){
+    for(int i = 0; i < orderReceiveModel.length; i++){
+      if(
+        orderReceiveModel[i].orderDate.toDate().year == now.year &&
+        orderReceiveModel[i].orderDate.toDate().month == now.month &&
+        orderReceiveModel[i].orderDate.toDate().day == now.day
+      ){
+        turnover = turnover + orderReceiveModel[i].xtotalAmount;
+      }
+    }
+  }
+
   return SizedBox(
     height: 100,
     child: Center(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const[
-          Text(
-            'HKD\$ 9999.',
-            style: TextStyle(fontSize: 30, color: Colors.greenAccent)
+      child: Column(
+        children: [
+          const Text(
+            '本日收益',
+            style: TextStyle(color: Colors.greenAccent, fontSize: 18)
           ),
-          Text(
-            '99',
-            style: TextStyle(fontSize: 20, color: Colors.greenAccent)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'HKD\$${formatter.format(int.parse(turnover.toStringAsFixed(0)))}.',
+                style: const TextStyle(fontSize: 30, color: Colors.greenAccent)
+              ),
+              Text(
+                turnover.toStringAsFixed(2).substring(
+                  turnover.toStringAsFixed(2).length - 2, 
+                  turnover.toStringAsFixed(2).length
+                ),
+                style: const TextStyle(fontSize: 20, color: Colors.greenAccent)
+              ),
+            ],
           ),
         ],
       ),
@@ -180,12 +212,13 @@ Widget _orderListView(BuildContext context){
           '最新訂單',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
         ),
+        orderReceiveModel == null ?  Container() :
         ListView.builder(
           shrinkWrap: true,
           itemCount: orderReceiveModel.length,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index){
-            return orderReceiveModel[index].isComplete != true ?
+            return orderReceiveModel[index].isComplete == true ? Container() :
             GestureDetector(
               onTap: () => Navigator.push(
                 context, MaterialPageRoute(builder: (context) => ReceiveDetails(
@@ -193,60 +226,10 @@ Widget _orderListView(BuildContext context){
                   docId: orderReceiveModel[index].docId
                 )
               )),
-              child: _orderItemView(orderReceiveModel[index])
-            ) : Container();
+              child: OrderItemView(orderReceiveModel: orderReceiveModel[index]),
+            );
           }
         )
-      ],
-    ),
-  );
-}
-
-Widget _orderItemView(OrderReceiveModel orderReceiveModel){
-  return Container(
-    decoration: BoxDecoration(
-      color: const Color(primaryDark),
-      borderRadius: BorderRadius.circular(7)
-    ),
-    padding: const EdgeInsets.all(20),
-    margin: const EdgeInsets.only(bottom: 10, top: 10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Expanded(
-              child: Text('訂單日期 : ')
-            ),
-            Text(
-              DateFormat('yyyy/MM/dd  kk:mm').format(DateTime.fromMicrosecondsSinceEpoch(orderReceiveModel.orderDate.microsecondsSinceEpoch))
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            const Expanded(
-              child: Text('訂單編號 : ')
-            ),
-            Text(orderReceiveModel.orderNumber),
-          ],
-        ),
-        // Row(
-        //   children: [
-        //       const Expanded(
-        //       child: Text('訂單狀態 : ')
-        //     ),
-        //     orderReceiveModel.isComplete == true ?
-        //     const Text(
-        //       '已完成',
-        //       style: TextStyle(color: Colors.blueAccent),
-        //     ) :
-        //     const Text(
-        //       '未完成',
-        //       style: TextStyle(color: Colors.redAccent),
-        //     ),
-        //   ],
-        // ),
       ],
     ),
   );

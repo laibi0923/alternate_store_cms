@@ -18,7 +18,8 @@ class ProductListView extends StatelessWidget {
       floatingActionButton: _buildFloatingActionButton(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: _buildSearchAppBar(context),
-      body: ListView.builder(
+      body: productModel == null ? Container() :
+      ListView.builder(
         itemCount: productModel.length,
         itemBuilder: (context, index){
           return GestureDetector(

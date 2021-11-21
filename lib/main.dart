@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
         // ignore: missing_required_param
         StreamProvider.value(value: CouponService().getCouponCode),
         // ignore: missing_required_param
-        StreamProvider.value(value: OrderService().getOrder),
+        StreamProvider.value(value: OrderService().getOrder,),
         // ignore: missing_required_param
         StreamProvider.value(value: PaymentMethodService().getPaymentMethod),
         // ignore: missing_required_param

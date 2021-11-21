@@ -1,6 +1,3 @@
-// @dart=2.9
-// ignore_for_file: missing_return
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
 

@@ -1,3 +1,4 @@
+import 'package:alternate_store_cms/screen/order/order_itemviews.dart';
 import 'package:alternate_store_cms/screen/order/receive_details.dart';
 import 'package:flutter/material.dart';
 import 'package:alternate_store_cms/constants.dart';
@@ -16,7 +17,7 @@ class _OrderListViewState extends State<OrderListView> {
   @override
   Widget build(BuildContext context) {
 
-    final orderReceiveData = Provider.of<List<OrderReceiveModel>>(context);
+    final orderReceiveModel = Provider.of<List<OrderReceiveModel>>(context);
 
     return Scaffold(
       backgroundColor: const Color(backgroundDark),
@@ -36,67 +37,19 @@ class _OrderListViewState extends State<OrderListView> {
         ],
       ),
       // ignore: unnecessary_null_comparison
-      body: orderReceiveData == null ? Container() :
+      body: orderReceiveModel == null ? Container() :
       ListView.builder(
         physics: const BouncingScrollPhysics(),
-        itemCount: orderReceiveData.length,
+        itemCount: orderReceiveModel.length,
         padding: const EdgeInsets.only(left: 20, right: 20),
         itemBuilder: (context, index){
-          return Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            decoration: BoxDecoration(
-              color: const Color(primaryDark),
-              borderRadius: BorderRadius.circular(7)
-            ),
-            child: GestureDetector(
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiveDetails(
-                  reference: orderReceiveData[index].ref, 
-                  docId: orderReceiveData[index].docId
-                )
-              )),
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Text('訂單日期 : ')
-                        ),
-                        Text(
-                          DateFormat('yyyy/MM/dd  kk:mm').format(DateTime.fromMicrosecondsSinceEpoch(orderReceiveData[index].orderDate.microsecondsSinceEpoch))
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Text('訂單編號 : ')
-                        ),
-                        Text(orderReceiveData[index].orderNumber),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                         const Expanded(
-                          child: Text('訂單狀態 : ')
-                        ),
-                        orderReceiveData[index].isComplete == true ?
-                        const Text(
-                          '已完成',
-                          style: TextStyle(color: Colors.blueAccent),
-                        ) :
-                        const Text(
-                          '未完成',
-                          style: TextStyle(color: Colors.redAccent),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          return GestureDetector(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiveDetails(
+                reference: orderReceiveModel[index].ref, 
+                docId: orderReceiveModel[index].docId
+              )
+            )),
+            child: OrderItemView(orderReceiveModel: orderReceiveModel[index]),
           );
         }
       ),
