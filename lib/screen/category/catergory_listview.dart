@@ -164,7 +164,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
       backgroundColor: const Color(backgroundDark),
       floatingActionButton: _buildFloatingActionButton(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      appBar: _appbar(context, widget.selectedList),
+      appBar: _buildSearchAppBar(context, widget.selectedList),
       body: _categoryModel == null ? Container() :
       ListView.builder(
         padding: const EdgeInsets.only(bottom: 150),
@@ -185,7 +185,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
     );
   }
 
-  AppBar _appbar(BuildContext context, List list){
+  AppBar _buildSearchAppBar(BuildContext context, List list){
     return AppBar(
       automaticallyImplyLeading: false,
       elevation: 0,

@@ -88,7 +88,7 @@ class ReceiveDetails extends StatelessWidget {
           return snapshot.data == null ? Container() :
           ListView(
             physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.only(left: 20, right: 20),
+            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 150),
             children: [
 
               _buildOrderHeader(
@@ -123,7 +123,8 @@ class ReceiveDetails extends StatelessWidget {
                 snapshot.data['DISCOUNT_AMOUNT'], 
                 snapshot.data['SHIPPING_FREE'], 
                 snapshot.data['TOTAL_AMOUNT'], 
-                snapshot.data['PAYMENT_METHOD']
+                snapshot.data['PAYMENT_METHOD'],
+                context
               ),
    
               Container(height: 80,),
@@ -387,8 +388,9 @@ Container _buildProductItemView(Map<String, dynamic> orderProductData){
   );
 }
 
-Column _buildSummary(double subAmount, String discountCode, double discountAmount, double shippingFree, double totalAmount, String payMethod){
+Column _buildSummary(double subAmount, String discountCode, double discountAmount, double shippingFree, double totalAmount, String payMethod, BuildContext context){
   return Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
 
       CartSummaryItemView(
@@ -425,6 +427,16 @@ Column _buildSummary(double subAmount, String discountCode, double discountAmoun
         isbold: false, 
         showAddBox: false
       ),
+
+      Container(height: 50),
+
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Colors.greenAccent
+        ),
+        onPressed: () => Navigator.pop(context), 
+        child: const Text('完成訂單')
+      )
 
     ],
   );
