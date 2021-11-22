@@ -16,7 +16,7 @@ class ReceiveDetails extends StatelessWidget {
 
   Future<void> _onShipping(BuildContext context, int index, List dataList) async {
 
-    if(dataList[index]['SHIPPING_STATUS'] == false){
+    if(dataList[index]['SHIPPING_STATUS'] == ''){
       bool dialogResult = await showDialog(
         context: context, 
         builder: (BuildContext context){
@@ -35,7 +35,7 @@ class ReceiveDetails extends StatelessWidget {
 
         newDataList[index].remove('SHIPPING_STATUS');
         newDataList[index].addAll({
-          'SHIPPING_STATUS' : true,
+          'SHIPPING_STATUS' : '已出貨',
           'SHIPPING_DATE' : Timestamp.now()
         });
 
@@ -48,7 +48,7 @@ class ReceiveDetails extends StatelessWidget {
         //  判斷每項出貨狀態 = True總和如相等於貨品數目, 則更新 Order ISCOMPLETE
         int isCompleteProduct = 0;
         for (var element in dataList) {
-          if(element['SHIPPING_STATUS'] == true){
+          if(element['SHIPPING_STATUS'].isNotEmpty){
             isCompleteProduct++;
           }
         }
@@ -354,10 +354,10 @@ Container _buildProductItemView(Map<String, dynamic> orderProductData){
             const Expanded(
               child: Text('出貨狀況')
             ),
-            orderProductData['SHIPPING_STATUS'] == true ? 
-            const Text(
-              '已出貨',
-              style: TextStyle(color: Colors.blueAccent),
+            orderProductData['SHIPPING_STATUS'].isNotEmpty ? 
+            Text(
+              orderProductData['SHIPPING_STATUS'],
+              style: const TextStyle(color: Colors.blueAccent),
             ) : 
             const Text(
               '未出貨',
