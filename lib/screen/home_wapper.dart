@@ -1,7 +1,7 @@
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/currency_textview.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
-import 'package:alternate_store_cms/screen/category/catergory_controller.dart';
+import 'package:alternate_store_cms/screen/category/catergory_listview.dart';
 import 'package:alternate_store_cms/screen/coupon/coupon_controller.dart';
 import 'package:alternate_store_cms/screen/member/member_listview.dart';
 import 'package:alternate_store_cms/screen/order/order_itemviews.dart';
@@ -134,7 +134,7 @@ Widget _functionButton(BuildContext context){
           ),
         ),
         GestureDetector(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const CatergoryController(selectOpen: false, selectedList: [],))),
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const CatergoryListView(selectOpen: false, selectedList: [],))),
           child: _functionButtonItemView(
             const Icon(Icons.category_outlined, size: 30,), 
             '類別管理'

@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:alternate_store_cms/model/privatepolicy_model.dart';
 import 'package:alternate_store_cms/model/returnpolicy_model.dart';
-import 'package:alternate_store_cms/screen/category/catergory_controller.dart';
 import 'package:alternate_store_cms/service/category_database.dart';
 import 'package:alternate_store_cms/service/coupon_service.dart';
 import 'package:alternate_store_cms/service/order_service.dart';

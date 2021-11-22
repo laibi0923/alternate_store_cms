@@ -31,7 +31,7 @@ class CategoryDatabase{
     _ref.doc(docId).delete();
   }
 
-  void setQuickSearch (String docId, bool isSeted){
+  void setQuickSearch (String docId, bool isSeted){ 
     if(isSeted == true){
       _ref.doc(docId).update({
         'QUICK_SEARCH' : false
@@ -41,7 +41,6 @@ class CategoryDatabase{
         'QUICK_SEARCH' : true
       });
     }
-    
   }
 
 

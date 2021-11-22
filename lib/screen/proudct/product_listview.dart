@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/currency_textview.dart';
 import 'package:alternate_store_cms/model/product_model.dart';
@@ -21,6 +23,7 @@ class ProductListView extends StatelessWidget {
       appBar: _buildSearchAppBar(context),
       body: productModel == null ? Container() :
       ListView.builder(
+        padding: const EdgeInsets.only(bottom: 150),
         itemCount: productModel.length,
         itemBuilder: (context, index){
           return GestureDetector(
@@ -31,125 +34,126 @@ class ProductListView extends StatelessWidget {
       ),
     );
   }
-}
 
-AppBar _buildSearchAppBar(BuildContext context){
-  return AppBar(
-    automaticallyImplyLeading: false,
-    elevation: 0,
-    title: Container(
-      decoration: BoxDecoration(
-        color: const Color(primaryDark),
-        borderRadius: BorderRadius.circular(7)
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: () => Navigator.pop(context), 
-            icon: const Icon(
-              Icons.arrow_back, 
-              size: 20,
-              color: Colors.white,
-            )
-          ),
-          Expanded(
-            child: TextField(
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(0),
-                isDense: true,
-                hintText: 'Product Name'
+  AppBar _buildSearchAppBar(BuildContext context){
+    return AppBar(
+      automaticallyImplyLeading: false,
+      elevation: 0,
+      title: Container(
+        decoration: BoxDecoration(
+          color: const Color(primaryDark),
+          borderRadius: BorderRadius.circular(7)
+        ),
+        child: Row(
+          children: [
+            IconButton(
+              onPressed: () => Navigator.pop(context), 
+              icon: const Icon(
+                Icons.arrow_back, 
+                size: 20,
+                color: Colors.white,
+              )
+            ),
+            Expanded(
+              child: TextField(
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(0),
+                  isDense: true,
+                  hintText: 'Product Name'
+                ),
+                onChanged: (val){},
               ),
-              onChanged: (val){},
+            ),
+            const Padding(
+              padding: EdgeInsets.only(right: 15),
+              child: Icon(
+                Icons.search,
+                color: Colors.white
+              )
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  FloatingActionButton _buildFloatingActionButton(BuildContext context){
+    return FloatingActionButton(
+      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductEditor())),
+      child: const Icon(Icons.add, color: Colors.grey),
+      backgroundColor: const Color(primaryDark),
+      elevation: 0,
+    );
+  }
+
+  Widget productListItem(BuildContext context, ProductModel productModel){
+    return Container(
+      height: 120,
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(right: 20),
+            height: 100,
+            width: 100,
+            decoration: BoxDecoration(
+              color: const Color(primaryDark),
+              borderRadius: BorderRadius.circular(7),
+              image: DecorationImage(
+                image: NetworkImage(productModel.imagePatch[0])
+              )
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(right: 15),
-            child: Icon(
-              Icons.search,
-              color: Colors.white
-            )
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(productModel.productNo)
+                    ),
+                    productModel.inStock ? Container() :
+                    const Text(
+                      '已下架',
+                      style: TextStyle(color: Colors.redAccent),
+                    )
+                  ],
+                ),
+                Text(
+                  productModel.productName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text('已售出 : ${productModel.sold}'),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CurrencyTextView(
+                      value: productModel.price, 
+                      textStyle: productModel.discountPrice == 0 ? 
+                      const TextStyle() : 
+                      const TextStyle(decoration: TextDecoration.lineThrough)
+                    ),
+                    Container(width: 10,),
+                    productModel.discountPrice == 0 ? const Text('') :
+                    CurrencyTextView(
+                      value: productModel.discountPrice, 
+                      textStyle: const TextStyle(color: Colors.redAccent),
+                    ),
+                  ],
+                )
+
+              ],
+            ),
           )
         ],
       ),
-    ),
-  );
-}
-
-FloatingActionButton _buildFloatingActionButton(BuildContext context){
-  return FloatingActionButton(
-    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductEditor())),
-    child: const Icon(Icons.add, color: Colors.grey),
-    backgroundColor: const Color(primaryDark),
-    elevation: 0,
-  );
-}
-
-Widget productListItem(BuildContext context, ProductModel productModel){
-  return Container(
-    height: 120,
-    width: MediaQuery.of(context).size.width,
-    padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: const EdgeInsets.only(right: 20),
-          height: 100,
-          width: 100,
-          decoration: BoxDecoration(
-            color: const Color(primaryDark),
-            borderRadius: BorderRadius.circular(7),
-            image: DecorationImage(
-              image: NetworkImage(productModel.imagePatch[0])
-            )
-          ),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(productModel.productNo)
-                  ),
-                  productModel.inStock ? Container() :
-                  const Text(
-                    '已下架',
-                    style: TextStyle(color: Colors.redAccent),
-                  )
-                ],
-              ),
-              Text(
-                productModel.productName,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text('已售出 : ${productModel.sold}'),
-              const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CurrencyTextView(
-                    value: productModel.price, 
-                    textStyle: productModel.discountPrice == 0 ? 
-                    const TextStyle() : 
-                    const TextStyle(decoration: TextDecoration.lineThrough)
-                  ),
-                  Container(width: 10,),
-                  productModel.discountPrice == 0 ? const Text('') :
-                  CurrencyTextView(
-                    value: productModel.discountPrice, 
-                    textStyle: const TextStyle(color: Colors.redAccent),
-                  ),
-                ],
-              )
-
-            ],
-          ),
-        )
-      ],
-    ),
-  );
+    );
+  }
+  
 }

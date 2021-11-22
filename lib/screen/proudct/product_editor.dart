@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:alternate_store_cms/screen/category/catergory_listview.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +12,6 @@ import 'package:alternate_store_cms/model/category_model.dart';
 import 'package:alternate_store_cms/model/product_model.dart';
 import 'package:alternate_store_cms/custom_snackbar.dart';
 import 'package:alternate_store_cms/randomstring_gender.dart';
-import 'package:alternate_store_cms/screen/category/catergory_controller.dart';
 import 'package:alternate_store_cms/service/product_database.dart';
 import 'package:alternate_store_cms/inputvalue_dialog.dart';
 
@@ -285,7 +285,7 @@ class _ProductEditorState extends State<ProductEditor> {
   //  Add Product Categoty
   Future<void> _addCategory() async {
 
-    List<CategoryModel> selectedList = await Navigator.push(context, MaterialPageRoute(builder: (context) => CatergoryController(selectOpen: true, selectedList: _categoryList,)));
+    List<CategoryModel> selectedList = await Navigator.push(context, MaterialPageRoute(builder: (context) => CatergoryListView(selectOpen: true, selectedList: _categoryList,)));
 
     // ignore: unnecessary_null_comparison
     if(selectedList != null){
