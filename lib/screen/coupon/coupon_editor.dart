@@ -152,6 +152,10 @@ class _CouponEditorState extends State<CouponEditor> {
     });
   }
 
+  void _delCoupon(String docId) {
+    CouponService().delCoupon(docId);
+    Navigator.pop(context);
+  }
 
   void _setUnLimited(){
     setState(() {
@@ -257,7 +261,7 @@ class _CouponEditorState extends State<CouponEditor> {
                 ),
 
                 _buildPercentageTextFiled(
-                  '百分比扣減 (% OFF)',
+                  '百分比扣減(%OFF)',
                   _couponPercentageTextEditingController,
                   _couponPriceTextEditingController
                 ),
@@ -319,6 +323,18 @@ class _CouponEditorState extends State<CouponEditor> {
 
           widget.editModel == false ? Container() :
           Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 60),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.redAccent
+              ),
+              onPressed: () => _delCoupon(widget.couponModel.docId), 
+              child: const Text('刪除')
+            ),
+          ),
+
+          widget.editModel == false ? Container() :
+          Padding(
             padding: const EdgeInsets.only(top: 30),
             child: Center(
               child: Text(
@@ -374,8 +390,7 @@ class _CouponEditorState extends State<CouponEditor> {
   }
 
   Expanded _buildPercentageTextFiled(String title, TextEditingController controller, TextEditingController anotherCotroller){
-    return 
-    Expanded(
+    return Expanded(
       child: Container(
         padding: const EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
         margin: const EdgeInsets.only(top: 20),

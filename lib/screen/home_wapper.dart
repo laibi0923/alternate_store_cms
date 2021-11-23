@@ -1,8 +1,7 @@
 import 'package:alternate_store_cms/constants.dart';
-import 'package:alternate_store_cms/currency_textview.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
 import 'package:alternate_store_cms/screen/category/catergory_listview.dart';
-import 'package:alternate_store_cms/screen/coupon/coupon_controller.dart';
+import 'package:alternate_store_cms/screen/coupon/coupon_listview.dart';
 import 'package:alternate_store_cms/screen/member/member_listview.dart';
 import 'package:alternate_store_cms/screen/order/order_itemviews.dart';
 import 'package:alternate_store_cms/screen/order/order_listview.dart';
@@ -142,7 +141,7 @@ Widget _functionButton(BuildContext context){
           ),
         ),
         GestureDetector(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const CouponController())),
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const CouponListView())),
           child: _functionButtonItemView(
             const Icon(Icons.card_giftcard, size: 30,), 
             '優惠代碼'

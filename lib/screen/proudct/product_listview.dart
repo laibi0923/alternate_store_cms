@@ -61,7 +61,7 @@ class ProductListView extends StatelessWidget {
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(0),
                   isDense: true,
-                  hintText: 'Product Name'
+                  hintText: '商品名稱捜尋'
                 ),
                 onChanged: (val){},
               ),

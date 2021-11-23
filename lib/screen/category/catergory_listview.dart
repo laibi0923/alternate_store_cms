@@ -213,7 +213,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(0),
                   isDense: true,
-                  hintText: 'Category Name'
+                  hintText: '類別名稱捜尋'
                 ),
                 onChanged: (val){},
               ),

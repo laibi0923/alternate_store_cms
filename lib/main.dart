@@ -3,6 +3,7 @@ import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/screen/home_wapper.dart';
 import 'package:alternate_store_cms/screen/order/order_listview.dart';
 import 'package:alternate_store_cms/screen/proudct/product_listview.dart';
+import 'package:alternate_store_cms/service/member_database.dart';
 import 'package:alternate_store_cms/service/product_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,6 +63,8 @@ class MyApp extends StatelessWidget {
         StreamProvider.value(value: PaymentMethodService().getPaymentMethod),
         // ignore: missing_required_param
         StreamProvider.value(value: ProductDatabase().showProduct),
+        // ignore: missing_required_param
+        StreamProvider.value(value: MemberDatabase().showMember),
 
       ],
       child: MaterialApp(
