@@ -140,6 +140,8 @@ class _CatergoryListViewState extends State<CatergoryListView> {
 
     final _categoryModel = Provider.of<List<CategoryModel>>(context);
 
+    if(_categoryModel == null) ()=> Container();
+
     _categoryItemList = _categoryModel;  
 
     //  清空已選狀態
@@ -167,6 +169,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
       appBar: _buildSearchAppBar(context, widget.selectedList),
       body: _categoryModel == null ? Container() :
       ListView.builder(
+        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.only(bottom: 150),
         itemCount: _categoryModel.length,
         itemBuilder: (context, index){

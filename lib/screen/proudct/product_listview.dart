@@ -23,6 +23,7 @@ class ProductListView extends StatelessWidget {
       appBar: _buildSearchAppBar(context),
       body: productModel == null ? Container() :
       ListView.builder(
+        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.only(bottom: 150),
         itemCount: productModel.length,
         itemBuilder: (context, index){

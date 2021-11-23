@@ -41,6 +41,7 @@ class HomeWapper extends StatelessWidget {
       ),
       body: ListView(
         shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
         children: [
           _customHeader(context),
           _functionButton(context),
