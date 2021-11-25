@@ -2,6 +2,7 @@
 
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/currency_textview.dart';
+import 'package:alternate_store_cms/model/category_model.dart';
 import 'package:alternate_store_cms/model/product_model.dart';
 import 'package:alternate_store_cms/screen/proudct/product_editor.dart';
 import 'package:alternate_store_cms/service/product_database.dart';
@@ -14,22 +15,28 @@ class ProductListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final productModel = Provider.of<List<ProductModel>>(context);
+    final _productModel = Provider.of<List<ProductModel>>(context);
+    final _categoryModel = Provider.of<List<CategoryModel>>(context);
 
     return Scaffold(
       backgroundColor: const Color(backgroundDark),
       floatingActionButton: _buildFloatingActionButton(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: _buildSearchAppBar(context),
-      body: productModel == null ? Container() :
+      body: _productModel == null ? Container() :
       ListView.builder(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.only(bottom: 150),
-        itemCount: productModel.length,
+        itemCount: _productModel.length,
         itemBuilder: (context, index){
           return GestureDetector(
-            onTap: () {},
-            child: productListItem(context, productModel[index])
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditor(
+              editMode: true, 
+              productModel: _productModel[index],
+              categoryModel: _categoryModel
+              ))
+            ),
+            child: productListItem(context, _productModel[index])
           );
         }
       ),
@@ -81,7 +88,12 @@ class ProductListView extends StatelessWidget {
 
   FloatingActionButton _buildFloatingActionButton(BuildContext context){
     return FloatingActionButton(
-      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductEditor())),
+      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditor(
+        editMode: false, 
+        productModel: ProductModel.initialData(),
+        categoryModel: []
+        ))
+      ),
       child: const Icon(Icons.add, color: Colors.grey),
       backgroundColor: const Color(primaryDark),
       elevation: 0,

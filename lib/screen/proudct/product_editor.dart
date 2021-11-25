@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:alternate_store_cms/custom_cachednetworkimage.dart';
 import 'package:alternate_store_cms/screen/category/catergory_listview.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,10 +16,14 @@ import 'package:alternate_store_cms/custom_snackbar.dart';
 import 'package:alternate_store_cms/randomstring_gender.dart';
 import 'package:alternate_store_cms/service/product_database.dart';
 import 'package:alternate_store_cms/inputvalue_dialog.dart';
+import 'package:provider/provider.dart';
 
 
 class ProductEditor extends StatefulWidget {
-  const ProductEditor({ Key? key }) : super(key: key);
+  final bool editMode;
+  final ProductModel productModel;
+  final List<CategoryModel> categoryModel;
+  const ProductEditor({Key? key, required this.editMode, required this.productModel, required this.categoryModel}) : super(key: key);
 
   @override
   State<ProductEditor> createState() => _ProductEditorState();
@@ -29,7 +35,7 @@ class _ProductEditorState extends State<ProductEditor> {
   bool _refundable = false;
 
   List<XFile>? _imageList = [];
-  final List _sizeList = [];
+  late  List _sizeList = [];
   final List<Map<String, dynamic>> _colorList = [];
   List<CategoryModel> _categoryList = [];
 
@@ -40,6 +46,7 @@ class _ProductEditorState extends State<ProductEditor> {
   final TextEditingController _discountController = TextEditingController();
   final TextEditingController _tagController = TextEditingController();
 
+  //  Show Loading Screen
   void showLoadingIndicator() {
     showDialog(
       context: context,
@@ -211,6 +218,7 @@ class _ProductEditorState extends State<ProductEditor> {
     }
   }
 
+  // Remove Product Image
   _removeProductImage(int index){
     setState(() {
       _imageList!.removeAt(index);  
@@ -233,6 +241,7 @@ class _ProductEditorState extends State<ProductEditor> {
     }
   }
 
+  //  Remove Size
   _removeSize(int index){
     setState(() {
       _sizeList.removeAt(index);  
@@ -260,7 +269,7 @@ class _ProductEditorState extends State<ProductEditor> {
     String result = await showDialog(
       context: context, 
       builder: (BuildContext context){
-        return inputValueDialog(context, '輸入顏色', 'eg : 0XFF000000...');
+        return inputValueDialog(context, '輸入顏色', 'eg : 白色 / 黑色...');
       }
     );
 
@@ -276,6 +285,7 @@ class _ProductEditorState extends State<ProductEditor> {
   
   }
 
+  //  Remove Color
   _removeColor(int index){
     setState(() {
       _colorList.removeAt(index);  
@@ -284,6 +294,8 @@ class _ProductEditorState extends State<ProductEditor> {
 
   //  Add Product Categoty
   Future<void> _addCategory() async {
+
+    print('>>>>>> ${_categoryList}');
 
     List<CategoryModel> selectedList = await Navigator.push(context, MaterialPageRoute(builder: (context) => CatergoryListView(selectOpen: true, selectedList: _categoryList,)));
 
@@ -299,6 +311,7 @@ class _ProductEditorState extends State<ProductEditor> {
     }
   }
 
+  //  Remove Category
   _removeCategory(int index){
     setState(() {
       _categoryList.removeAt(index);  
@@ -328,11 +341,41 @@ class _ProductEditorState extends State<ProductEditor> {
   }
 
   @override
-  void initState() {
-    _productNumberController.text = 'SKU${randomStringGender(10, false)}';
-    _priceController.text = '0.00';
-    _discountController.text = '0.00';
+  void initState() {  
     super.initState();
+    if(widget.editMode == false){
+      _productNumberController.text = 'SKU${randomStringGender(10, false)}';
+      _priceController.text = '0.00';
+      _discountController.text = '0.00';
+    } else {
+
+      // _imageList = widget.productModel.imagePatch;
+      _productNumberController.text = widget.productModel.productNo;
+      _productNameController.text = widget.productModel.productName;
+      _descriptionController.text = widget.productModel.description;
+      _priceController.text = widget.productModel.price.toStringAsFixed(2);
+      _discountController.text = widget.productModel.discountPrice.toStringAsFixed(2);
+      _sizeList = widget.productModel.size;
+      // _colorList = widget.productModel.color;
+      _tagController.text = widget.productModel.tag;
+      _inStock = widget.productModel.inStock;
+      _refundable = widget.productModel.refundable;
+
+      
+      if(widget.categoryModel != null){
+
+        for(int i = 0; i < widget.productModel.category.length; i++){
+          for(int k = 0; k < widget.categoryModel.length; k++){
+            if(widget.productModel.category[i] == widget.categoryModel[k].name){
+              _categoryList.add(widget.categoryModel[k]);
+            }
+          }
+        }
+        
+      }
+      
+      
+    }
   }
 
   @override
@@ -354,7 +397,7 @@ class _ProductEditorState extends State<ProductEditor> {
         children: [
 
           ListView(
-            shrinkWrap: false,
+            shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
             children: [
     
@@ -395,7 +438,8 @@ class _ProductEditorState extends State<ProductEditor> {
                           ],
                         ),
                       ),
-                      _imageList!.isEmpty ? 
+                      
+                      widget.productModel.imagePatch.isEmpty && _imageList!.isEmpty ? 
                       const Padding(
                         padding: EdgeInsets.only(top: 75, bottom: 75),
                         child: Center(
@@ -405,30 +449,64 @@ class _ProductEditorState extends State<ProductEditor> {
                       Container(
                         margin: const EdgeInsets.only(top: 20, bottom: 20),
                         height: 150,
-                        child: ListView.builder(
-                          itemCount: _imageList!.length,
+                        child: ListView(
+                          shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
                           physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index){
-                            return GestureDetector(
-                              onTap: () => _removeProductImage(index),
-                              child: Container(
-                                height: 50,
-                                width: 150,
-                                margin: const EdgeInsets.only(left: 15),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(17),
-                                  image: DecorationImage(
-                                    image: FileImage(File(_imageList![index].path)),
-                                    fit: BoxFit.cover
-                                  )
-                                ),
-                              ),
-                            );
-                          }
+                          children: [
+
+                            ListView.builder(
+                              itemCount: widget.productModel.imagePatch.length,
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index){
+                                return GestureDetector(
+                                  // onTap: () => _removeProductImage(index),
+                                  child: Container(
+                                    height: 50,
+                                    width: 150,
+                                    margin: const EdgeInsets.only(left: 15),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(17),
+                                      child: CachedNetworkImage(
+                                        imageUrl: widget.productModel.imagePatch[index]
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            ),
+
+                            ListView.builder(
+                              itemCount: _imageList!.length,
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index){
+                                return GestureDetector(
+                                  onTap: () => _removeProductImage(index),
+                                  child: Container(
+                                    height: 50,
+                                    width: 150,
+                                    margin: const EdgeInsets.only(left: 15),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(17),
+                                      image: DecorationImage(
+                                        image: FileImage(File(_imageList![index].path)),
+                                        fit: BoxFit.cover
+                                      )
+                                    ),
+                                  ),
+                                );
+                              }
+                            ),
+
+                          ],
                         )
                       ),
+                    
                     ],
                   ),
                 ),
@@ -609,7 +687,7 @@ class _ProductEditorState extends State<ProductEditor> {
                           ],
                         ),
                       ),
-                      _colorList.isEmpty ? 
+                      widget.productModel.color.isEmpty && _colorList.isEmpty ? 
                       const Padding(
                         padding: EdgeInsets.only(top: 20, bottom: 40),
                         child: Center(
@@ -619,48 +697,98 @@ class _ProductEditorState extends State<ProductEditor> {
                       Container(
                         margin: const EdgeInsets.only(top: 20, bottom: 20),
                         height: 80,
-                        child: ListView.builder(
-                          itemCount: _colorList.length,
+                        child: ListView(
+                          shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
                           physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index){
-                            return GestureDetector(
-                              onTap: () => _removeColor(index),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 50,
-                                    width: 50,
-                                    margin: const EdgeInsets.only(left: 15),
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: FileImage(_colorList[index]['COLOR_IMAGE']),
-                                        fit: BoxFit.cover
+                          children: [
+
+                            ListView.builder(
+                              itemCount: widget.productModel.color.length,
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index){
+                                return GestureDetector(
+                                  // onTap: () => _removeColor(index),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 50,
+                                        width: 50,
+                                        margin: const EdgeInsets.only(left: 15),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(999),
+                                          child: cachedNetworkImage(
+                                            widget.productModel.color[index]['COLOR_IMAGE']
+                                          ),
+                                        ),
                                       ),
-                                      border: Border.all(
-                                        width: 1,
-                                        color: Colors.grey
+                                      Container(
+                                        width: 50,
+                                        margin: const EdgeInsets.only(left: 15),
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Center(
+                                          child: Text(
+                                            widget.productModel.color[index]['COLOR_NAME'],
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          )
+                                        ),
                                       ),
-                                      borderRadius: BorderRadius.circular(99)
-                                    ),
+                                    ],
                                   ),
-                                  Container(
-                                    width: 50,
-                                    margin: const EdgeInsets.only(left: 15),
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: Center(
-                                      child: Text(
-                                        _colorList[index]['COLOR_NAME'],
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      )
-                                    ),
+                                );
+                              }
+                            ),
+                            
+                            ListView.builder(
+                              itemCount: _colorList.length,
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index){
+                                return GestureDetector(
+                                  onTap: () => _removeColor(index),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 50,
+                                        width: 50,
+                                        margin: const EdgeInsets.only(left: 15),
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: FileImage(_colorList[index]['COLOR_IMAGE']),
+                                            fit: BoxFit.cover
+                                          ),
+                                          border: Border.all(
+                                            width: 1,
+                                            color: Colors.grey
+                                          ),
+                                          borderRadius: BorderRadius.circular(99)
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 50,
+                                        margin: const EdgeInsets.only(left: 15),
+                                        padding: const EdgeInsets.only(top: 10),
+                                        child: Center(
+                                          child: Text(
+                                            _colorList[index]['COLOR_NAME'],
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          )
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                          }
+                                );
+                              }
+                            ),
+
+                          ],
                         )
                       ),
               
@@ -715,7 +843,8 @@ class _ProductEditorState extends State<ProductEditor> {
                           ],
                         ),
                       ),
-                      _categoryList.isEmpty ? const Padding(
+                      _categoryList.isEmpty ? 
+                      const Padding(
                         padding: EdgeInsets.only(top: 20, bottom: 40),
                         child: Center(
                           child: Text('點撃新增'),
@@ -728,6 +857,7 @@ class _ProductEditorState extends State<ProductEditor> {
                           itemCount: _categoryList.length,
                           scrollDirection: Axis.horizontal,
                           physics: const BouncingScrollPhysics(),
+                          shrinkWrap: true,
                           itemBuilder: (context, index){
                             return GestureDetector(
                               onTap: () => _removeCategory(index),
