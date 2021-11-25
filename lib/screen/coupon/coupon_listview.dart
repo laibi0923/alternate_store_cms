@@ -30,8 +30,6 @@ class _CouponListViewState extends State<CouponListView> {
 
     final _couponData = Provider.of<List<CouponModel>>(context);
     // ignore: unnecessary_null_comparison
-    if(_couponData == null) () => Container();
-
     return Scaffold(
       backgroundColor: const Color(backgroundDark),
       floatingActionButton: FloatingActionButton(
@@ -42,7 +40,8 @@ class _CouponListViewState extends State<CouponListView> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: _buildSearchAppBar(context),
-      body: ListView.builder(
+      body: _couponData == null ? Container() :
+      ListView.builder(
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 150),
         itemCount: _couponData.length,
         physics: const BouncingScrollPhysics(),

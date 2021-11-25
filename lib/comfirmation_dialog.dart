@@ -52,7 +52,7 @@ Widget comfirmationDialog(BuildContext context, String title, String content, St
                     ),
                     child: Text(
                       submitBtnText,
-                      style: const TextStyle(color: Colors.blueAccent),
+                      style: const TextStyle(color: Colors.greenAccent),
                     )
                   )
                 ),

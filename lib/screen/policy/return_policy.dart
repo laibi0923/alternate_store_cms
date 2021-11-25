@@ -81,7 +81,7 @@ class _ReturnPolicyState extends State<ReturnPolicy> {
                 child:  TextField(
                   controller: textEditingController,
                   scrollPhysics: const BouncingScrollPhysics(),
-                  maxLines: 30,
+                  maxLines: 900,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                   ),

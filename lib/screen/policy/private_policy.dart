@@ -82,7 +82,7 @@ class _PrivatePolicyState extends State<PrivatePolicy> {
                 child: TextField(
                   controller: textEditingController,
                   scrollPhysics: const BouncingScrollPhysics(),
-                  maxLines: 30,
+                  maxLines: 900,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
                   ),

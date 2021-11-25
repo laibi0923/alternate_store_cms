@@ -127,7 +127,6 @@ class ReceiveDetails extends StatelessWidget {
                 context
               ),
    
-              Container(height: 80,),
             ]
           );
         },
@@ -282,21 +281,30 @@ Container _buildProductItemView(Map<String, dynamic> orderProductData){
                     Row(
                       children: [
                         // Product Color
-                        Container(
-                          height: 35,
-                          width: 35,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1,
-                              color: Colors.grey
-                            ),
-                            borderRadius: BorderRadius.circular(999)
-                          ),
-                          margin: const EdgeInsets.only(right: 15),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(999),
-                            child: cachedNetworkImage(orderProductData['COLOR_IMAGE'])
-                          ),
+                        Text(
+                          orderProductData['COLOR_NAME'],
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        // Container(
+                        //   height: 35,
+                        //   width: 35,
+                        //   decoration: BoxDecoration(
+                        //     border: Border.all(
+                        //       width: 1,
+                        //       color: Colors.grey
+                        //     ),
+                        //     borderRadius: BorderRadius.circular(999)
+                        //   ),
+                        //   margin: const EdgeInsets.only(right: 15),
+                        //   child: ClipRRect(
+                        //     borderRadius: BorderRadius.circular(999),
+                        //     child: cachedNetworkImage(orderProductData['COLOR_IMAGE'])
+                        //   ),
+                        // ),
+
+                        const Text(
+                          "  |  ",
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
 
                         //  Product Size
@@ -358,7 +366,7 @@ Container _buildProductItemView(Map<String, dynamic> orderProductData){
             orderProductData['SHIPPING_STATUS'].isNotEmpty ? 
             Text(
               orderProductData['SHIPPING_STATUS'],
-              style: const TextStyle(color: Colors.blueAccent),
+              style: const TextStyle(color: Colors.greenAccent),
             ) : 
             const Text(
               '未出貨',
@@ -428,15 +436,15 @@ Column _buildSummary(double subAmount, String discountCode, double discountAmoun
         showAddBox: false
       ),
 
-      Container(height: 50),
+      // Container(height: 50),
 
-      ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: Colors.greenAccent
-        ),
-        onPressed: () => Navigator.pop(context), 
-        child: const Text('完成訂單')
-      )
+      // ElevatedButton(
+      //   style: ElevatedButton.styleFrom(
+      //     primary: Colors.greenAccent
+      //   ),
+      //   onPressed: () => Navigator.pop(context), 
+      //   child: const Text('完成訂單')
+      // )
 
     ],
   );

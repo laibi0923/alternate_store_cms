@@ -12,12 +12,11 @@ class MemberListView extends StatelessWidget {
 
     final _userModel = Provider.of<List<UserModel>>(context);
 
-    if(_userModel == null) () => Container();
-
     return Scaffold(
       backgroundColor: const Color(backgroundDark),
       appBar: _buildSearchAppBar(context),
-      body: ListView.builder(
+      body: _userModel == null ? Container() :
+      ListView.builder(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 150),
         itemCount: _userModel.length,
@@ -79,8 +78,10 @@ class MemberListView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            width: 80,
+            height: 80,
             margin: const EdgeInsets.only(right: 20),
-            child: ClipRRect(borderRadius: BorderRadius.circular(99),
+            child: ClipRRect(borderRadius: BorderRadius.circular(999),
               child: userModel.userPhoto == null ? 
               Container(
                 padding: const EdgeInsets.all(10),
@@ -93,7 +94,8 @@ class MemberListView extends StatelessWidget {
                 )
               ) :
               CachedNetworkImage(
-                imageUrl: userModel.userPhoto
+                imageUrl: userModel.userPhoto,
+                fit: BoxFit.cover,
               ),
             ),
           ),

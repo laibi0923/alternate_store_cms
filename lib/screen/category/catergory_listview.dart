@@ -140,15 +140,16 @@ class _CatergoryListViewState extends State<CatergoryListView> {
 
     final _categoryModel = Provider.of<List<CategoryModel>>(context);
 
-    if(_categoryModel == null) ()=> Container();
-
-    _categoryItemList = _categoryModel;  
-
-    //  清空已選狀態
-    for(int i = 0; i < _categoryItemList.length; i++){
-      _categoryItemList[i].isSelect = false;  
+    if(_categoryModel == null) {
+      return Container();
+    } else {
+      //  清空已選狀態
+      for(int i = 0; i < _categoryItemList.length; i++){
+        _categoryItemList[i].isSelect = false;  
+      }
+      _categoryItemList = _categoryModel;  
     }
-
+    
     //  如果外部 List 不為空則對比現有 List 如果名字相同則 set isSelect 為 true
     if(widget.selectedList.isNotEmpty){
       for(int i = 0; i < _categoryItemList.length; i++){
@@ -161,7 +162,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
         }
       }
     }
-    
+
     return Scaffold(
       backgroundColor: const Color(backgroundDark),
       floatingActionButton: _buildFloatingActionButton(context),
@@ -280,7 +281,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
                 height: 40,
                 width: 40,
                 decoration: BoxDecoration(
-                  color: Colors.blueAccent,
+                  color: Colors.greenAccent,
                   borderRadius: BorderRadius.circular(7)
                 ),
                 child: categoryModel.isSelect == false ?

@@ -126,64 +126,70 @@ Widget _functionButton(BuildContext context){
         childAspectRatio: (itemWidth / itemHeight)
       ),
       children: [
-        GestureDetector(
+        InkWell(
+          splashColor: Colors.transparent,
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductListView())),
           child: _functionButtonItemView(
             const Icon(Icons.widgets, size: 30,), 
             '商品管理'
           ),
         ),
-        GestureDetector(
+        InkWell(
+          splashColor: Colors.transparent,
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const CatergoryListView(selectOpen: false, selectedList: [],))),
           child: _functionButtonItemView(
             const Icon(Icons.category_outlined, size: 30,), 
             '類別管理'
           ),
         ),
-        GestureDetector(
+        InkWell(
+          splashColor: Colors.transparent,
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const CouponListView())),
           child: _functionButtonItemView(
             const Icon(Icons.card_giftcard, size: 30,), 
             '優惠代碼'
           ),
         ),
-        GestureDetector(
+        InkWell(
+          splashColor: Colors.transparent,
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const OrderListView())),
           child: _functionButtonItemView(
             const Icon(Icons.inbox_rounded, size: 30,), 
             '訂單查詢'
           ),
         ),
-
-        GestureDetector(
+        InkWell(
+          splashColor: Colors.transparent,
           onTap: (){},
           child: _functionButtonItemView(
             const Icon(Icons.outbox_rounded, size: 30,), 
             '退貨管理'
           ),
         ),
-        GestureDetector(
+        InkWell(
+          splashColor: Colors.transparent,
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const MemberListView())),
           child: _functionButtonItemView(
             const Icon(Icons.person, size: 30,), 
             '會員系統'
           ),
         ),
-        GestureDetector(
+        InkWell(
+          splashColor: Colors.transparent,
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PrivatePolicy())),
           child: _functionButtonItemView(
             const Icon(Icons.admin_panel_settings_outlined, size: 30,), 
             '私人政策'
           ),
         ),
-        GestureDetector(
+        InkWell(
+          splashColor: Colors.transparent,
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ReturnPolicy())),
           child: _functionButtonItemView(
             const Icon(Icons.admin_panel_settings_outlined, size: 30,), 
             '退貨政策'
           ),
         ),
-
       ],
     ),
   );
@@ -203,6 +209,20 @@ Widget _functionButtonItemView(Icon icon, String title){
 Widget _orderListView(BuildContext context){
 
   final orderReceiveModel = Provider.of<List<OrderReceiveModel>>(context);
+
+  int _notCompleteCounter = 0;
+
+  if(orderReceiveModel == null){
+    return Container();
+  } else {
+    for(int i = 0; i < orderReceiveModel.length; i++){
+      if(orderReceiveModel[i].isComplete == false){
+        _notCompleteCounter++;
+      }
+    }
+  }
+
+  
   
   return Padding(
     padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
@@ -213,7 +233,16 @@ Widget _orderListView(BuildContext context){
           '最新訂單',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
         ),
-        orderReceiveModel == null ?  Container() :
+        _notCompleteCounter == 0 ?  
+        const SizedBox(
+          height: 160,
+          child: Center(
+            child: Text(
+              '暫無新的訂單',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+        ) :
         ListView.builder(
           shrinkWrap: true,
           itemCount: orderReceiveModel.length,
