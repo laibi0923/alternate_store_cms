@@ -121,6 +121,53 @@ class ProductDatabase {
   
   }
 
+  //  更新貨品
+  Future<void> updateProduct(String productNumber, ProductModel productModel) async{
+    try{
+      DocumentReference xref = FirebaseFirestore.instance.collection('product').doc(productNumber);
+      xref.update({
+        'CREATE_DATE': productModel.createDate,
+        'LAST_MODIFY': productModel.lastModify,
+        'INSTOCK': productModel.inStock,
+        'SOLD': productModel.sold,
+        'VIEW': productModel.views,
+        'PRODUCT_NO': productModel.productNo,
+        'PRODUCT_NAME': productModel.productName,
+        'IMAGE': productModel.imagePatch,
+        'DESCRIPTION': productModel.description,
+        'PRICE': productModel.price,
+        'DISCOUNT_PRICE': productModel.discountPrice,
+        'SIZE': productModel.size,
+        'COLOR': productModel.color,
+        'TAG': productModel.tag,
+        'CATEGORY': productModel.category,
+        'REFUND_ABLE': productModel.refundable
+      });
+    } catch (e){
+      // ignore: avoid_print
+      print(e);
+    }
+  }
+
+  void removeExistingProductImage(String productNumber, List list){
+    DocumentReference xref = FirebaseFirestore.instance.collection('product').doc(productNumber);
+    xref.update({
+      'IMAGE': list,
+    });
+  }
+
+  void removeExistingColorImage(String productNumber, List list){
+    DocumentReference xref = FirebaseFirestore.instance.collection('product').doc(productNumber);
+    xref.update({
+      'COLOR': list,
+    });
+  }
+
+  void delProduct(String productNumber){
+    DocumentReference xref = FirebaseFirestore.instance.collection('product').doc(productNumber);
+    xref.delete();
+  }
+
   //  賣出貨品計算 (CMS)
   soldProduct(String sku) async {
     _productRef.where('field', isEqualTo: sku).get().then((value) {

@@ -88,11 +88,13 @@ class ProductListView extends StatelessWidget {
 
   FloatingActionButton _buildFloatingActionButton(BuildContext context){
     return FloatingActionButton(
-      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditor(
-        editMode: false, 
-        productModel: ProductModel.initialData(),
-        categoryModel: []
-        ))
+      onPressed: () => 
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditor(
+          editMode: false, 
+          productModel: ProductModel.initialData(),
+          categoryModel: []
+          )
+        )
       ),
       child: const Icon(Icons.add, color: Colors.grey),
       backgroundColor: const Color(primaryDark),

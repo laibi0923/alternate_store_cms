@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:alternate_store_cms/comfirmation_dialog.dart';
 import 'package:alternate_store_cms/custom_cachednetworkimage.dart';
 import 'package:alternate_store_cms/screen/category/catergory_listview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -16,7 +17,6 @@ import 'package:alternate_store_cms/custom_snackbar.dart';
 import 'package:alternate_store_cms/randomstring_gender.dart';
 import 'package:alternate_store_cms/service/product_database.dart';
 import 'package:alternate_store_cms/inputvalue_dialog.dart';
-import 'package:provider/provider.dart';
 
 
 class ProductEditor extends StatefulWidget {
@@ -34,9 +34,11 @@ class _ProductEditorState extends State<ProductEditor> {
   bool _inStock = false;
   bool _refundable = false;
 
-  List<XFile>? _imageList = [];
-  late  List _sizeList = [];
-  final List<Map<String, dynamic>> _colorList = [];
+  List<dynamic> _dbProductImageList = [];
+  List<XFile>? _localProductImageList = [];
+  late List _sizeList = [];
+  List<dynamic> _dbColorList = [];
+  final List<Map<String, dynamic>> _localColorList = [];
   List<CategoryModel> _categoryList = [];
 
   final TextEditingController _productNumberController = TextEditingController();
@@ -107,10 +109,15 @@ class _ProductEditorState extends State<ProductEditor> {
     );
   }
 
-  //  Upload Product to Firestore
-  void _uploadProduct(){
+  //  Create new product or Update existing product
+  Future<void> _uploadProduct() async {
 
-    if(_imageList!.isEmpty){
+    if(widget.editMode == true) {
+      if(_localProductImageList!.isEmpty && _dbProductImageList.isEmpty){
+        CustomSnackBar().show(context, '最少一張產品圖片');
+        return;
+      }
+    } else if(_localProductImageList!.isEmpty){
       CustomSnackBar().show(context, '最少一張產品圖片');
       return;
     }
@@ -141,8 +148,13 @@ class _ProductEditorState extends State<ProductEditor> {
       CustomSnackBar().show(context, '最少輸入一隻呎碼');
       return;
     }
-
-    if(_colorList.isEmpty){
+    
+    if(widget.editMode == true) {
+      if(_localColorList.isEmpty && _dbColorList.isEmpty){
+        CustomSnackBar().show(context, '最少輸入一隻顏色');
+        return;
+      }
+    } else if(_localColorList.isEmpty){
       CustomSnackBar().show(context, '最少輸入一隻顏色');
       return;
     }
@@ -153,43 +165,120 @@ class _ProductEditorState extends State<ProductEditor> {
       builder: (BuildContext context) => loadingIndicator()
     );
 
+
     List _tempCategoryList = [];
     for(int i = 0; i < _categoryList.length; i++){
       _tempCategoryList.add(_categoryList[i].name);
     }
 
-    ProductDatabase().uploadProductImage(_imageList!).then((_imageUrlList) {
+    //  Create new product or Update existing product
+    List _tempProductImageList = [];
+    List _tempProductColorList = [];
 
-      ProductDatabase().uploadColorImage(_colorList).then((_colorUrlList) {
+    if(widget.editMode == true){
 
-        ProductDatabase().createNewProduct(
-            _productNumberController.text,
-            ProductModel(
-              Timestamp.now(), 
-              Timestamp.now(), 
-              _inStock, 
-              0, 
-              0, 
-              _productNumberController.text, 
-              _productNameController.text, 
-              _imageUrlList, 
-              _descriptionController.text, 
-              _orginalPrice, 
-              _discountPrice, 
-              _sizeList, 
-              _colorUrlList, 
-              _tagController.text, 
-              _tempCategoryList, 
-              _refundable
-            )
-          ).then((value) {
-            Navigator.pop(context);
-            Navigator.pop(context);
-            CustomSnackBar().show(context, '上載完成');
-          });
+      //  Upload product image  
+      if(_localProductImageList!.isEmpty){
+        _tempProductImageList = _dbProductImageList;
+      } else {
+        _tempProductImageList = await ProductDatabase().uploadProductImage(_localProductImageList!).then((value) {
+          return _dbProductImageList + value;
         });
+      }
 
+      //  Upload color image     
+      if(_localColorList.isEmpty){
+        _tempProductColorList = _dbColorList;
+      } else {
+        _tempProductColorList = await ProductDatabase().uploadColorImage(_localColorList).then((value) {
+          return _dbColorList + value;
+        });
+      }
+
+      ProductDatabase().updateProduct(
+        widget.productModel.productNo, 
+        ProductModel(
+          widget.productModel.createDate, 
+          Timestamp.now(), 
+          _inStock, 
+          widget.productModel.sold, 
+          widget.productModel.views, 
+          widget.productModel.productNo, 
+          _productNameController.text, 
+          _tempProductImageList, 
+          _descriptionController.text, 
+          _orginalPrice, 
+          _discountPrice, 
+          _sizeList, 
+          _tempProductColorList, 
+          _tagController.text, 
+          _tempCategoryList, 
+          _refundable
+        )
+      ).then((value) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+        CustomSnackBar().show(context, '更新完成');
       });
+
+    } else {
+
+      //  Upload product image  
+      _tempProductImageList = await ProductDatabase().uploadProductImage(_localProductImageList!);
+      //  Upload color image   
+      _tempProductColorList = await ProductDatabase().uploadColorImage(_localColorList);
+
+      ProductDatabase().createNewProduct(
+        _productNumberController.text,
+        ProductModel(
+          Timestamp.now(), 
+          Timestamp.now(), 
+          _inStock, 
+          0, 
+          0, 
+          _productNumberController.text, 
+          _productNameController.text, 
+          _tempProductColorList, 
+          _descriptionController.text, 
+          _orginalPrice, 
+          _discountPrice, 
+          _sizeList, 
+          _tempProductImageList, 
+          _tagController.text, 
+          _tempCategoryList, 
+          _refundable
+        )
+      ).then((value) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+        CustomSnackBar().show(context, '上載完成');
+      });
+
+    }
+
+  }
+
+  //  Del Product
+  Future<void> _delProductItem() async {
+    bool result = await showDialog(
+      context: context, 
+      builder: (BuildContext context){
+        return comfirmationDialog(
+          context, 
+          '刪除商品', 
+          '一經刪除將無法復原，確定從資料庫中刪除此商品?', 
+          '確定', 
+          '取消'
+        );
+      }
+    );
+
+    if(result == true){
+      setState(() {
+        Navigator.pop(context);
+        ProductDatabase().delProduct(widget.productModel.productNo);
+      });
+    }
   }
 
   //  Add Product Image
@@ -197,9 +286,9 @@ class _ProductEditorState extends State<ProductEditor> {
 
     try{
 
-      _imageList = (await ImagePicker().pickMultiImage());
+      _localProductImageList = (await ImagePicker().pickMultiImage());
 
-      if(_imageList!.isNotEmpty){
+      if(_localProductImageList!.isNotEmpty){
         setState(() {});
       }
       // final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -219,10 +308,33 @@ class _ProductEditorState extends State<ProductEditor> {
   }
 
   // Remove Product Image
-  _removeProductImage(int index){
+  void _removeProductImage(int index){
     setState(() {
-      _imageList!.removeAt(index);  
+      _localProductImageList!.removeAt(index);  
     });
+  }
+
+  //  Remove product Image from database
+  Future<void> _removeDBProductImage(int index) async {
+    bool result = await showDialog(
+      context: context, 
+      builder: (BuildContext context){
+        return comfirmationDialog(
+          context, 
+          '刪除', 
+          '確定從資料庫中刪除此照片?', 
+          '確定', 
+          '取消'
+        );
+      }
+    );
+
+    if(result == true){
+      setState(() {
+        _dbProductImageList.removeAt(index);
+        ProductDatabase().removeExistingProductImage(widget.productModel.productNo, _dbProductImageList);  
+      });
+    }
   }
 
   //  Add Product Size
@@ -242,7 +354,7 @@ class _ProductEditorState extends State<ProductEditor> {
   }
 
   //  Remove Size
-  _removeSize(int index){
+  void _removeSize(int index){
     setState(() {
       _sizeList.removeAt(index);  
     });
@@ -276,7 +388,7 @@ class _ProductEditorState extends State<ProductEditor> {
     // ignore: unnecessary_null_comparison
     if(result != null && result.isNotEmpty){
       setState(() {
-        _colorList.add({
+        _localColorList.add({
           "COLOR_IMAGE" : imageTemporary,
           "COLOR_NAME" : result.toUpperCase().trim(),
         });  
@@ -286,16 +398,37 @@ class _ProductEditorState extends State<ProductEditor> {
   }
 
   //  Remove Color
-  _removeColor(int index){
+  void _removeColor(int index){
     setState(() {
-      _colorList.removeAt(index);  
+      _localColorList.removeAt(index);  
     });
+  }
+
+  //  Remove color from database
+  Future<void> _removeDBColor(int index) async {
+    bool result = await showDialog(
+      context: context, 
+      builder: (BuildContext context){
+        return comfirmationDialog(
+          context, 
+          '刪除', 
+          '確定從資料庫中刪除此商品顏色?', 
+          '確定', 
+          '取消'
+        );
+      }
+    );
+
+    if(result == true){
+      setState(() {
+        _dbColorList.removeAt(index);
+        ProductDatabase().removeExistingColorImage(widget.productModel.productNo, _dbColorList);
+      });
+    } 
   }
 
   //  Add Product Categoty
   Future<void> _addCategory() async {
-
-    print('>>>>>> ${_categoryList}');
 
     List<CategoryModel> selectedList = await Navigator.push(context, MaterialPageRoute(builder: (context) => CatergoryListView(selectOpen: true, selectedList: _categoryList,)));
 
@@ -312,7 +445,7 @@ class _ProductEditorState extends State<ProductEditor> {
   }
 
   //  Remove Category
-  _removeCategory(int index){
+  void _removeCategory(int index){
     setState(() {
       _categoryList.removeAt(index);  
     });
@@ -343,27 +476,26 @@ class _ProductEditorState extends State<ProductEditor> {
   @override
   void initState() {  
     super.initState();
+
     if(widget.editMode == false){
       _productNumberController.text = 'SKU${randomStringGender(10, false)}';
       _priceController.text = '0.00';
       _discountController.text = '0.00';
     } else {
 
-      // _imageList = widget.productModel.imagePatch;
+      _dbProductImageList = widget.productModel.imagePatch;
       _productNumberController.text = widget.productModel.productNo;
       _productNameController.text = widget.productModel.productName;
       _descriptionController.text = widget.productModel.description;
       _priceController.text = widget.productModel.price.toStringAsFixed(2);
       _discountController.text = widget.productModel.discountPrice.toStringAsFixed(2);
       _sizeList = widget.productModel.size;
-      // _colorList = widget.productModel.color;
+      _dbColorList = widget.productModel.color;
       _tagController.text = widget.productModel.tag;
       _inStock = widget.productModel.inStock;
       _refundable = widget.productModel.refundable;
 
-      
       if(widget.categoryModel != null){
-
         for(int i = 0; i < widget.productModel.category.length; i++){
           for(int k = 0; k < widget.categoryModel.length; k++){
             if(widget.productModel.category[i] == widget.categoryModel[k].name){
@@ -371,9 +503,8 @@ class _ProductEditorState extends State<ProductEditor> {
             }
           }
         }
-        
+        print(_categoryList);
       }
-      
       
     }
   }
@@ -399,6 +530,7 @@ class _ProductEditorState extends State<ProductEditor> {
           ListView(
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.only(bottom: 150),
             children: [
     
               const Padding(
@@ -439,7 +571,7 @@ class _ProductEditorState extends State<ProductEditor> {
                         ),
                       ),
                       
-                      widget.productModel.imagePatch.isEmpty && _imageList!.isEmpty ? 
+                      _dbProductImageList.isEmpty && _localProductImageList!.isEmpty ? 
                       const Padding(
                         padding: EdgeInsets.only(top: 75, bottom: 75),
                         child: Center(
@@ -456,48 +588,75 @@ class _ProductEditorState extends State<ProductEditor> {
                           children: [
 
                             ListView.builder(
-                              itemCount: widget.productModel.imagePatch.length,
+                              itemCount: _dbProductImageList.length,
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index){
                                 return GestureDetector(
-                                  // onTap: () => _removeProductImage(index),
-                                  child: Container(
-                                    height: 50,
-                                    width: 150,
-                                    margin: const EdgeInsets.only(left: 15),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(17),
-                                      child: CachedNetworkImage(
-                                        imageUrl: widget.productModel.imagePatch[index]
+                                  onTap: () => _removeDBProductImage(index),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        height: 150,
+                                        width: 150,
+                                        padding: const EdgeInsets.all(10),
+                                        margin: const EdgeInsets.only(left: 15),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(7),
+                                          child: CachedNetworkImage(
+                                            imageUrl: _dbProductImageList[index]
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      const Positioned(
+                                        top: 0,
+                                        right: 0,
+                                        child: Icon(
+                                          Icons.cancel, 
+                                          color: Colors.redAccent,
+                                          size: 30,
+                                        )
+                                      )
+                                    ],
                                   ),
                                 );
                               }
                             ),
 
                             ListView.builder(
-                              itemCount: _imageList!.length,
+                              itemCount: _localProductImageList!.length,
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index){
                                 return GestureDetector(
                                   onTap: () => _removeProductImage(index),
-                                  child: Container(
-                                    height: 50,
-                                    width: 150,
-                                    margin: const EdgeInsets.only(left: 15),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(17),
-                                      image: DecorationImage(
-                                        image: FileImage(File(_imageList![index].path)),
-                                        fit: BoxFit.cover
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        height: 150,
+                                        width: 150,
+                                        padding: const EdgeInsets.all(10),
+                                        margin: const EdgeInsets.only(left: 15),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(7),
+                                          child: Image.file(
+                                            File(_localProductImageList![index].path),
+                                            fit: BoxFit.cover
+                                          ),
+                                        ),
+                                      ),
+                                      const Positioned(
+                                        top: 0,
+                                        right: 0,
+                                        child: Icon(
+                                          Icons.cancel, 
+                                          color: Colors.redAccent,
+                                          size: 30,
+                                        )
                                       )
-                                    ),
+                                    ],
                                   ),
                                 );
                               }
@@ -687,7 +846,7 @@ class _ProductEditorState extends State<ProductEditor> {
                           ],
                         ),
                       ),
-                      widget.productModel.color.isEmpty && _colorList.isEmpty ? 
+                      _dbColorList.isEmpty && _localColorList.isEmpty ? 
                       const Padding(
                         padding: EdgeInsets.only(top: 20, bottom: 40),
                         child: Center(
@@ -696,7 +855,7 @@ class _ProductEditorState extends State<ProductEditor> {
                       ) :
                       Container(
                         margin: const EdgeInsets.only(top: 20, bottom: 20),
-                        height: 80,
+                        height: 110,
                         child: ListView(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
@@ -704,39 +863,54 @@ class _ProductEditorState extends State<ProductEditor> {
                           children: [
 
                             ListView.builder(
-                              itemCount: widget.productModel.color.length,
+                              itemCount: _dbColorList.length,
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index){
                                 return GestureDetector(
-                                  // onTap: () => _removeColor(index),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                  onTap: () => _removeDBColor(index),
+                                  child: Stack(
                                     children: [
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        margin: const EdgeInsets.only(left: 15),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(999),
-                                          child: cachedNetworkImage(
-                                            widget.productModel.color[index]['COLOR_IMAGE']
-                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Column(                                  
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              height: 60,
+                                              width: 60,
+                                              margin: const EdgeInsets.only(left: 15),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(999),
+                                                child: cachedNetworkImage(
+                                                  _dbColorList[index]['COLOR_IMAGE']
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 50,
+                                              margin: const EdgeInsets.only(left: 15),
+                                              padding: const EdgeInsets.only(top: 10),
+                                              child: Center(
+                                                child: Text(
+                                                  _dbColorList[index]['COLOR_NAME'],
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                )
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      Container(
-                                        width: 50,
-                                        margin: const EdgeInsets.only(left: 15),
-                                        padding: const EdgeInsets.only(top: 10),
-                                        child: Center(
-                                          child: Text(
-                                            widget.productModel.color[index]['COLOR_NAME'],
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          )
-                                        ),
-                                      ),
+                                      const Positioned(
+                                        top: 0,
+                                        right: 0,
+                                        child: Icon(
+                                          Icons.cancel,
+                                          color: Colors.redAccent,
+                                        )
+                                      )
                                     ],
                                   ),
                                 );
@@ -744,7 +918,7 @@ class _ProductEditorState extends State<ProductEditor> {
                             ),
                             
                             ListView.builder(
-                              itemCount: _colorList.length,
+                              itemCount: _localColorList.length,
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -754,21 +928,36 @@ class _ProductEditorState extends State<ProductEditor> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      Container(
-                                        height: 50,
-                                        width: 50,
-                                        margin: const EdgeInsets.only(left: 15),
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: FileImage(_colorList[index]['COLOR_IMAGE']),
-                                            fit: BoxFit.cover
+                                      Stack(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Container(
+                                              height: 60,
+                                              width: 60,
+                                              margin: const EdgeInsets.only(left: 15),
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: FileImage(_localColorList[index]['COLOR_IMAGE']),
+                                                  fit: BoxFit.cover
+                                                ),
+                                                border: Border.all(
+                                                  width: 1,
+                                                  color: Colors.grey
+                                                ),
+                                                borderRadius: BorderRadius.circular(99)
+                                              ),
+                                            ),
                                           ),
-                                          border: Border.all(
-                                            width: 1,
-                                            color: Colors.grey
-                                          ),
-                                          borderRadius: BorderRadius.circular(99)
-                                        ),
+                                          const Positioned(
+                                            top: 0,
+                                            right: 0,
+                                            child: Icon(
+                                              Icons.cancel,
+                                              color: Colors.redAccent,
+                                            )
+                                          )
+                                        ],
                                       ),
                                       Container(
                                         width: 50,
@@ -776,7 +965,7 @@ class _ProductEditorState extends State<ProductEditor> {
                                         padding: const EdgeInsets.only(top: 10),
                                         child: Center(
                                           child: Text(
-                                            _colorList[index]['COLOR_NAME'],
+                                            _localColorList[index]['COLOR_NAME'],
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           )
@@ -929,9 +1118,17 @@ class _ProductEditorState extends State<ProductEditor> {
                 ),
               ),
     
-              Container(
-                height: 50,
-              )
+              widget.editMode != true ? Container() :
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 60),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.redAccent
+                  ),
+                  onPressed: () => _delProductItem(), 
+                  child: const Text('刪除此商')
+                ),
+              ),
     
             ],
           ),
@@ -977,8 +1174,7 @@ class _ProductEditorState extends State<ProductEditor> {
   }
 
   Expanded _buildPriceTextFiled(String title, TextEditingController controller){
-    return 
-    Expanded(
+    return Expanded(
       child: Container(
         padding: const EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
         margin: const EdgeInsets.only(top: 20),
