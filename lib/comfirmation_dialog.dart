@@ -35,7 +35,7 @@ Widget comfirmationDialog(BuildContext context, String title, String content, St
           ),
 
           Padding(
-            padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 40),
+            padding: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 30),
             child: Text(content, textAlign: TextAlign.center,)
           ),
 
