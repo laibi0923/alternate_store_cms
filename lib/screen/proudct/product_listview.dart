@@ -17,24 +17,22 @@ class ProductListView extends StatefulWidget {
 
 class _ProductListViewState extends State<ProductListView> {
 
-  final List<ProductModel> _resultList = [];
-  final List<ProductModel> _productlist = [];
+  final List<ProductModel> _searchList = [];
+  final TextEditingController _searchTextController = TextEditingController();
   late int _searchResultCounter = 0;
 
   void _searchProduct(String val, List<ProductModel> list){
     setState(() {
-      _resultList.clear();
+      _searchList.clear();
       _searchResultCounter = 0;
-      if(val.isEmpty){
-        _resultList.addAll(list);
-      } else {
+      if(val.isNotEmpty) {
         for(int i = 0; i < list.length; i++){
           if(
             list[i].productName.toUpperCase().contains(val.toUpperCase()) ||
             list[i].productNo.toUpperCase().contains(val.toUpperCase())
           ){
-            _resultList.add(list[i]);
-            _searchResultCounter = _resultList.length;
+            _searchList.add(list[i]);
+            _searchResultCounter = _searchList.length;
           } 
         }
       }  
@@ -42,22 +40,16 @@ class _ProductListViewState extends State<ProductListView> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _productlist.addAll(widget.productList);
-    _resultList.addAll(widget.productList);
-  }
-
-  @override
   Widget build(BuildContext context) {
 
+    final _dbProductList = Provider.of<List<ProductModel>>(context);
     final _categoryModel = Provider.of<List<CategoryModel>>(context);
     
     return Scaffold(
       backgroundColor: const Color(backgroundDark),
       floatingActionButton: _buildFloatingActionButton(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      appBar: _buildSearchAppBar(context, _productlist),
+      appBar: _buildSearchAppBar(context, _dbProductList),
       body: Column(
         children: [
           _searchResultCounter == 0 ? Container() :
@@ -69,7 +61,9 @@ class _ProductListViewState extends State<ProductListView> {
             ),
           ),
           Expanded(
-            child: productListView(_categoryModel)
+            child: _searchTextController.text.isNotEmpty || _searchList.isNotEmpty ?
+            _productListView(_categoryModel, _searchList) :
+            _productListView(_categoryModel, _dbProductList)
           )
         ],
       )
@@ -97,6 +91,7 @@ class _ProductListViewState extends State<ProductListView> {
             ),
             Expanded(
               child: TextField(
+                controller: _searchTextController,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(0),
@@ -135,15 +130,15 @@ class _ProductListViewState extends State<ProductListView> {
     );
   }
 
-  Widget productListView(List<CategoryModel> categoryModel){
+  Widget _productListView(List<CategoryModel> categoryList, List<ProductModel> productList){
 
-    if(_resultList == null){
+    if(productList == null){
       return const Center(
         child: CircularProgressIndicator(color: Colors.grey),
       );
     }
 
-    if(_resultList.isEmpty){
+    if(productList.isEmpty){
       return const Center(
         child: Text(
           '找不到捜尋結果',
@@ -155,16 +150,25 @@ class _ProductListViewState extends State<ProductListView> {
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 150),
-      itemCount: _resultList.length,
+      itemCount: productList.length,
       itemBuilder: (context, index){
         return GestureDetector(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditor(
-            editMode: true, 
-            productModel: _resultList[index],
-            categoryModel: categoryModel
-            ))
-          ),
-          child: productListItem(context, _resultList[index])
+          onTap: () async {
+            bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditor(
+              editMode: true, 
+              productModel: productList[index],
+              categoryModel: categoryList
+              ))
+            );
+
+            if(result == true){
+              _searchTextController.clear();
+              _searchList.clear();
+              _searchResultCounter = 0;
+            }
+
+          } ,
+          child: productListItem(context, productList[index])
         );
       }
     );
@@ -238,4 +242,5 @@ class _ProductListViewState extends State<ProductListView> {
       ),
     );
   }
+
 }

@@ -144,7 +144,7 @@ Widget _functionButton(BuildContext context){
         InkWell(
           splashColor: Colors.transparent,
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => 
-            CatergoryListView(categoryList: _dbCategoryList, selectOpen: false, selectedList: [],))),
+            const CatergoryListView(selectOpen: false, selectedList: [],))),
           child: _functionButtonItemView(
             const Icon(Icons.category_outlined, size: 30,), 
             '類別管理'

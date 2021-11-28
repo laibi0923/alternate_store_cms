@@ -218,7 +218,7 @@ class _ProductEditorState extends State<ProductEditor> {
         )
       ).then((value) {
         Navigator.pop(context);
-        Navigator.pop(context);
+        Navigator.pop(context, true);
         CustomSnackBar().show(context, '更新完成');
       });
 
@@ -251,7 +251,7 @@ class _ProductEditorState extends State<ProductEditor> {
         )
       ).then((value) {
         Navigator.pop(context);
-        Navigator.pop(context);
+        Navigator.pop(context, true);
         CustomSnackBar().show(context, '上載完成');
       });
 
@@ -432,7 +432,7 @@ class _ProductEditorState extends State<ProductEditor> {
   Future<void> _addCategory(List<CategoryModel> dbCategoryList) async {
 
     List<CategoryModel> selectedList = await Navigator.push(context, MaterialPageRoute(builder: (context) => 
-      CatergoryListView(categoryList: dbCategoryList, selectOpen: true, selectedList: _categoryList,)));
+      CatergoryListView(selectOpen: true, selectedList: _categoryList,)));
 
     // ignore: unnecessary_null_comparison
     if(selectedList != null){

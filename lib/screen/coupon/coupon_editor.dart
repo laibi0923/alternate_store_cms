@@ -83,7 +83,7 @@ class _CouponEditorState extends State<CouponEditor> {
 
     }
 
-    Navigator.pop(context);
+    Navigator.pop(context, true);
 
   }
 
@@ -152,11 +152,13 @@ class _CouponEditorState extends State<CouponEditor> {
     });
   }
 
+  //  Delete Coupon
   void _delCoupon(String docId) {
     CouponService().delCoupon(docId);
-    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 
+  //  Limite switcher
   void _setUnLimited(){
     setState(() {
       if(_unLimited == true){
@@ -166,6 +168,7 @@ class _CouponEditorState extends State<CouponEditor> {
       }
     });
   }
+  
   @override
   void initState() {
     super.initState();

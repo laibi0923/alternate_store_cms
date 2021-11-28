@@ -8,12 +8,12 @@ import 'package:alternate_store_cms/service/category_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CatergoryListView extends StatefulWidget {
-  final List<CategoryModel> categoryList;
   final bool selectOpen;
   final List<CategoryModel> selectedList;
-  const CatergoryListView({Key? key, required this.selectOpen, required this.selectedList, required this.categoryList}) : super(key: key);
+  const CatergoryListView({Key? key, required this.selectOpen, required this.selectedList}) : super(key: key);
 
   @override
   State<CatergoryListView> createState() => _CatergoryListViewState();
@@ -21,9 +21,9 @@ class CatergoryListView extends StatefulWidget {
 
 class _CatergoryListViewState extends State<CatergoryListView> {
 
-  final List<CategoryModel> _categoryList = [];
-  final List<CategoryModel> _resultList = [];
+  final List<CategoryModel> _searchList = [];
   late int _searchResultCounter = 0;
+  final TextEditingController _searchTextController = TextEditingController();
 
   Future<void> _addCategory() async {
     String result = await showDialog(
@@ -89,6 +89,9 @@ class _CatergoryListViewState extends State<CatergoryListView> {
                   onPressed: () {
                     CategoryDatabase().setQuickSearch(docId, quickSearch);
                     Navigator.pop(context);
+                    _searchList.clear();
+                    _searchTextController.clear();
+                    _searchResultCounter = 0;
                   },
                   child: const Text('設定 / 取消快速捜尋')
                 ),
@@ -99,6 +102,9 @@ class _CatergoryListViewState extends State<CatergoryListView> {
                   onPressed: () {
                     CategoryDatabase().delCategory(docId);
                     Navigator.pop(context);
+                    _searchList.clear();
+                    _searchTextController.clear();
+                    _searchResultCounter = 0;
                   },
                   child: const Text('刪除')
                 ),
@@ -118,19 +124,19 @@ class _CatergoryListViewState extends State<CatergoryListView> {
     );
   }
 
-  void _selectItem(int index){
+  void _selectItem(int index, CategoryModel dbCategoryModel){
       if(widget.selectOpen == true){
         setState(() {
-          if(_resultList[index].isSelect == true){
-            _resultList[index].isSelect = false;
+          if(dbCategoryModel.isSelect == true){
+            dbCategoryModel.isSelect = false;
             for(int i = 0; i < widget.selectedList.length; i++){
-              if(widget.selectedList[i].name == _resultList[index].name){
+              if(widget.selectedList[i].name == dbCategoryModel.name){
                 widget.selectedList.removeAt(i);
               }
             }
           } else {
-            _resultList[index].isSelect = true;
-            widget.selectedList.add(_resultList[index]);
+            dbCategoryModel.isSelect = true;
+            widget.selectedList.add(dbCategoryModel);
           } 
         });
       }
@@ -138,55 +144,47 @@ class _CatergoryListViewState extends State<CatergoryListView> {
     
   void _searchCategory(String val, List<CategoryModel> list){
     setState(() {
-      _resultList.clear();
+      _searchList.clear();
       _searchResultCounter = 0;
-      if(val.isEmpty){
-        _resultList.addAll(list);
-      } else {
+      if(val.isNotEmpty){
         for(int i = 0; i < list.length; i++){
           if(list[i].name.toUpperCase().contains(val.toUpperCase())){
-            _resultList.add(list[i]);
-            _searchResultCounter = _resultList.length;
-          } 
+            _searchList.add(list[i]);
+            _searchResultCounter = _searchList.length;
+          }
         }
-      }  
+      }
     });
   }
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
 
-    _categoryList.addAll(widget.categoryList);
-    _resultList.addAll(widget.categoryList);
+    final _dbCategoryList = Provider.of<List<CategoryModel>>(context);
 
     //  清空已選狀態
-    for(int i = 0; i < _resultList.length; i++){
-      _resultList[i].isSelect = false;  
+    for(int i = 0; i < widget.selectedList.length; i++){
+      widget.selectedList[i].isSelect = false;  
     }
     
     //  如果外部 List 不為空則對比現有 List 如果名字相同則 set isSelect 為 true
     if(widget.selectedList.isNotEmpty){
-      for(int i = 0; i < _resultList.length; i++){
-        for(int k = 0; k < widget.selectedList.length; k++){
-          if(_resultList[i].name == widget.selectedList[k].name){
+      for(int i = 0; i < widget.selectedList.length; i++){
+        for(int k = 0; k < _dbCategoryList.length; k++){
+          if(widget.selectedList[i].name == _dbCategoryList[k].name){
             setState(() {
-              _resultList[i].isSelect = true;  
+              widget.selectedList[i].isSelect = true;  
             });
           }
         }
       }
     }
-    
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(backgroundDark),
       floatingActionButton: _buildFloatingActionButton(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      appBar: _buildSearchAppBar(context, _categoryList),
+      appBar: _buildSearchAppBar(context, _dbCategoryList),
       body: Column(
         children: [
           _searchResultCounter == 0 ? Container() :
@@ -198,7 +196,9 @@ class _CatergoryListViewState extends State<CatergoryListView> {
             ),
           ),
           Expanded(
-            child: _categoryListView()
+            child: _searchTextController.text.isNotEmpty || _searchList.isNotEmpty ? 
+            _categoryListView(_searchList) :
+            _categoryListView(_dbCategoryList)
           )
         ],
       )
@@ -236,6 +236,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
             ),
             Expanded(
               child: TextField(
+                controller: _searchTextController,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(0),
@@ -258,14 +259,15 @@ class _CatergoryListViewState extends State<CatergoryListView> {
     ); 
   }
 
-  Widget _categoryListView(){
-    if(_resultList == null){
+  Widget _categoryListView(List<CategoryModel> list){
+
+    if(list == null){
       return const Center(
         child: CircularProgressIndicator(color: Colors.grey),
       );
     }
 
-    if(_resultList.isEmpty){
+    if(list.isEmpty){
       return const Center(
         child: Text(
           '找不到捜尋結果',
@@ -277,9 +279,9 @@ class _CatergoryListViewState extends State<CatergoryListView> {
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 150),
-      itemCount: _resultList.length,
+      itemCount: list.length,
       itemBuilder: (context, index){
-        return _catrgoryitemview(_resultList[index], index);
+        return _catrgoryitemview(list[index], index);
       }
     );
 
@@ -329,7 +331,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
             const Spacer(),
             widget.selectOpen == false ? Container() :
             GestureDetector(
-              onTap: () => _selectItem(index),
+              onTap: () => _selectItem(index, categoryModel),
               child: Container(
                 height: 40,
                 width: 40,

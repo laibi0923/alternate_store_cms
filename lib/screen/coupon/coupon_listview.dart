@@ -15,20 +15,42 @@ class CouponListView extends StatefulWidget {
 
 class _CouponListViewState extends State<CouponListView> {
 
-  void _editCoupon(CouponModel couponModel) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CouponEditor(editModel: true, couponModel: couponModel,)));
+  final List<CouponModel> _searchList = [];
+  final TextEditingController _searchTextController = TextEditingController();
+  late int _searchResultCounter = 0; 
+
+  void _searchCoupon(String val, List<CouponModel> list){
+    setState(() {
+      _searchList.clear();
+      _searchResultCounter = 0;
+      if(val.isNotEmpty) {
+        for(int i = 0; i < list.length; i++){
+          if(list[i].couponCode.toUpperCase().contains(val.toUpperCase())){
+            _searchList.add(list[i]);
+            _searchResultCounter = _searchList.length;
+          } 
+        }
+      }  
+    });
+  }
+
+  Future<void> _editCoupon(CouponModel couponModel) async {
+    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) => CouponEditor(editModel: true, couponModel: couponModel,)));
+    if(result == true){
+      _searchList.clear();
+      _searchResultCounter = 0;
+      _searchTextController.clear();
+    }
   }
 
   void _addCoupon() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => CouponEditor(editModel: false, couponModel: CouponModel.initialData(),)));
   }
 
-  
-  
   @override
   Widget build(BuildContext context) {
 
-    final _couponData = Provider.of<List<CouponModel>>(context);
+    final _dbCouponList = Provider.of<List<CouponModel>>(context);
     // ignore: unnecessary_null_comparison
     return Scaffold(
       backgroundColor: const Color(backgroundDark),
@@ -39,23 +61,29 @@ class _CouponListViewState extends State<CouponListView> {
         elevation: 0,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      appBar: _buildSearchAppBar(context),
-      body: _couponData == null ? Container() :
-      ListView.builder(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 150),
-        itemCount: _couponData.length,
-        physics: const BouncingScrollPhysics(),
-        itemBuilder: (context, index){
-          return GestureDetector(
-            onTap: () => _editCoupon(_couponData[index]),
-            child: _couponItemView(_couponData[index])
-          );
-        }
-      ),
+      appBar: _buildSearchAppBar(context, _dbCouponList),
+      body: Column(
+        children: [
+          _searchResultCounter == 0 ? Container() :
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: Text(
+              '共找到 $_searchResultCounter 筆相關資料',
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ),
+          Expanded(
+            child: _searchTextController.text.isNotEmpty || _searchList.isNotEmpty ?
+            _couponListView(_searchList) :
+            _couponListView(_dbCouponList)
+          )
+        ],
+      )
+      
     );
   }
 
-  AppBar _buildSearchAppBar(BuildContext context){
+  AppBar _buildSearchAppBar(BuildContext context, List<CouponModel> list){
     return AppBar(
       automaticallyImplyLeading: false,
       elevation: 0,
@@ -76,13 +104,14 @@ class _CouponListViewState extends State<CouponListView> {
             ),
             Expanded(
               child: TextField(
+                controller: _searchTextController,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(0),
                   isDense: true,
                   hintText: '優惠碼捜尋'
                 ),
-                onChanged: (val){},
+                onChanged: (val) => _searchCoupon(val, list),
               ),
             ),
             const Padding(
@@ -98,6 +127,37 @@ class _CouponListViewState extends State<CouponListView> {
     );
   }
   
+  Widget _couponListView(List<CouponModel> list){
+
+    if(list == null){
+      return const Center(
+        child: CircularProgressIndicator(color: Colors.grey),
+      );
+    }
+
+    if(list.isEmpty){
+      return const Center(
+        child: Text(
+          '找不到捜尋結果',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 150),
+      itemCount: list.length,
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index){
+        return GestureDetector(
+          onTap: () => _editCoupon(list[index]),
+          child: _couponItemView(list[index])
+        );
+      }
+    );
+
+  }
+
   Widget _couponItemView(CouponModel couponModel){
     return Container(
       height: 80,
