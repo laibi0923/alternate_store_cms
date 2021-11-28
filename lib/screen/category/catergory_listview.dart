@@ -1,20 +1,19 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import 'dart:ui';
-
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/inputvalue_dialog.dart';
 import 'package:alternate_store_cms/model/category_model.dart';
 import 'package:alternate_store_cms/service/category_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 class CatergoryListView extends StatefulWidget {
+  final List<CategoryModel> categoryList;
   final bool selectOpen;
   final List<CategoryModel> selectedList;
-  const CatergoryListView({Key? key, required this.selectOpen, required this.selectedList}) : super(key: key);
+  const CatergoryListView({Key? key, required this.selectOpen, required this.selectedList, required this.categoryList}) : super(key: key);
 
   @override
   State<CatergoryListView> createState() => _CatergoryListViewState();
@@ -22,7 +21,9 @@ class CatergoryListView extends StatefulWidget {
 
 class _CatergoryListViewState extends State<CatergoryListView> {
 
-  List<CategoryModel> _categoryItemList = [];
+  final List<CategoryModel> _categoryList = [];
+  final List<CategoryModel> _resultList = [];
+  late int _searchResultCounter = 0;
 
   Future<void> _addCategory() async {
     String result = await showDialog(
@@ -120,59 +121,88 @@ class _CatergoryListViewState extends State<CatergoryListView> {
   void _selectItem(int index){
       if(widget.selectOpen == true){
         setState(() {
-          if(_categoryItemList[index].isSelect == true){
-            _categoryItemList[index].isSelect = false;
+          if(_resultList[index].isSelect == true){
+            _resultList[index].isSelect = false;
             for(int i = 0; i < widget.selectedList.length; i++){
-              if(widget.selectedList[i].name == _categoryItemList[index].name){
+              if(widget.selectedList[i].name == _resultList[index].name){
                 widget.selectedList.removeAt(i);
               }
             }
           } else {
-            _categoryItemList[index].isSelect = true;
-            widget.selectedList.add(_categoryItemList[index]);
+            _resultList[index].isSelect = true;
+            widget.selectedList.add(_resultList[index]);
           } 
         });
       }
     }
     
+  void _searchCategory(String val, List<CategoryModel> list){
+    setState(() {
+      _resultList.clear();
+      _searchResultCounter = 0;
+      if(val.isEmpty){
+        _resultList.addAll(list);
+      } else {
+        for(int i = 0; i < list.length; i++){
+          if(list[i].name.toUpperCase().contains(val.toUpperCase())){
+            _resultList.add(list[i]);
+            _searchResultCounter = _resultList.length;
+          } 
+        }
+      }  
+    });
+  }
+
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
 
-    final _categoryModel = Provider.of<List<CategoryModel>>(context);
+    _categoryList.addAll(widget.categoryList);
+    _resultList.addAll(widget.categoryList);
 
-      _categoryItemList = _categoryModel;  
-      //  清空已選狀態
-      for(int i = 0; i < _categoryItemList.length; i++){
-        _categoryItemList[i].isSelect = false;  
-      }
+    //  清空已選狀態
+    for(int i = 0; i < _resultList.length; i++){
+      _resultList[i].isSelect = false;  
+    }
     
     //  如果外部 List 不為空則對比現有 List 如果名字相同則 set isSelect 為 true
     if(widget.selectedList.isNotEmpty){
-      for(int i = 0; i < _categoryItemList.length; i++){
+      for(int i = 0; i < _resultList.length; i++){
         for(int k = 0; k < widget.selectedList.length; k++){
-          if(_categoryItemList[i].name == widget.selectedList[k].name){
+          if(_resultList[i].name == widget.selectedList[k].name){
             setState(() {
-              _categoryItemList[i].isSelect = true;  
+              _resultList[i].isSelect = true;  
             });
           }
         }
       }
     }
+    
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(backgroundDark),
       floatingActionButton: _buildFloatingActionButton(context),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      appBar: _buildSearchAppBar(context, widget.selectedList),
-      body: _categoryModel == null ? Container() :
-      ListView.builder(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.only(bottom: 150),
-        itemCount: _categoryModel.length,
-        itemBuilder: (context, index){
-          return _catrgoryitemview(_categoryModel[index], index);
-        }
-      ),
+      appBar: _buildSearchAppBar(context, _categoryList),
+      body: Column(
+        children: [
+          _searchResultCounter == 0 ? Container() :
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: Text(
+              '共找到 $_searchResultCounter 筆相關資料',
+              style: const TextStyle(color: Colors.grey),
+            ),
+          ),
+          Expanded(
+            child: _categoryListView()
+          )
+        ],
+      )
+      
     );
   }
 
@@ -185,7 +215,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
     );
   }
 
-  AppBar _buildSearchAppBar(BuildContext context, List list){
+  AppBar _buildSearchAppBar(BuildContext context, List<CategoryModel> list){
     return AppBar(
       automaticallyImplyLeading: false,
       elevation: 0,
@@ -197,7 +227,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
         child: Row(
           children: [
             IconButton(
-              onPressed: () => Navigator.pop(context, list), 
+              onPressed: () => Navigator.pop(context, widget.selectedList), 
               icon: const Icon(
                 Icons.arrow_back, 
                 size: 20,
@@ -212,7 +242,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
                   isDense: true,
                   hintText: '類別名稱捜尋'
                 ),
-                onChanged: (val){},
+                onChanged: (val) => _searchCategory(val, list),
               ),
             ),
             const Padding(
@@ -226,6 +256,33 @@ class _CatergoryListViewState extends State<CatergoryListView> {
         ),
       ),
     ); 
+  }
+
+  Widget _categoryListView(){
+    if(_resultList == null){
+      return const Center(
+        child: CircularProgressIndicator(color: Colors.grey),
+      );
+    }
+
+    if(_resultList.isEmpty){
+      return const Center(
+        child: Text(
+          '找不到捜尋結果',
+          style: TextStyle(color: Colors.grey),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.only(bottom: 150),
+      itemCount: _resultList.length,
+      itemBuilder: (context, index){
+        return _catrgoryitemview(_resultList[index], index);
+      }
+    );
+
   }
 
   Widget _catrgoryitemview(CategoryModel categoryModel, int index){

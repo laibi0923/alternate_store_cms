@@ -12,7 +12,8 @@ import 'package:alternate_store_cms/custom_cachednetworkimage.dart';
 class ReceiveDetails extends StatelessWidget {
   final DocumentReference reference;
   final String docId;
-  const ReceiveDetails({ Key? key, required this.reference, required this.docId }) : super(key: key);
+  final bool status;
+  const ReceiveDetails({ Key? key, required this.reference, required this.docId, required this.status }) : super(key: key);
 
   Future<void> _onShipping(BuildContext context, int index, List dataList) async {
 
@@ -64,6 +65,12 @@ class ReceiveDetails extends StatelessWidget {
     }
   }
 
+  void _shippingAll(BuildContext context, List dataList){
+    for(int i = 0; i < dataList.length; i++){
+      _onShipping(context, i, dataList);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +80,7 @@ class ReceiveDetails extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Row(
           children: [
-            // Text('dsahdhosihaoi'),
+            // Text(docId.toUpperCase()),
             const Spacer(),
             IconButton(
               onPressed: () => Navigator.pop(context), 
@@ -126,6 +133,17 @@ class ReceiveDetails extends StatelessWidget {
                 snapshot.data['PAYMENT_METHOD'],
                 context
               ),
+
+              Container(height: 40,),
+
+              status == true ? Container() :
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.greenAccent
+                ),
+                onPressed: () => _shippingAll(context, snapshot.data['ORDER_PRODUCT']), 
+                child: const Text('一鍵出貨')
+              )
    
             ]
           );

@@ -1,11 +1,13 @@
 import 'package:alternate_store_cms/constants.dart';
+import 'package:alternate_store_cms/model/category_model.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
+import 'package:alternate_store_cms/model/product_model.dart';
 import 'package:alternate_store_cms/screen/category/catergory_listview.dart';
 import 'package:alternate_store_cms/screen/coupon/coupon_listview.dart';
 import 'package:alternate_store_cms/screen/member/member_listview.dart';
 import 'package:alternate_store_cms/screen/order/order_itemviews.dart';
 import 'package:alternate_store_cms/screen/order/order_listview.dart';
-import 'package:alternate_store_cms/screen/order/receive_details.dart';
+import 'package:alternate_store_cms/screen/order/order_details.dart';
 import 'package:alternate_store_cms/screen/policy/private_policy.dart';
 import 'package:alternate_store_cms/screen/policy/return_policy.dart';
 import 'package:alternate_store_cms/screen/proudct/product_listview.dart';
@@ -105,6 +107,9 @@ Widget _customHeader(BuildContext context){
 
 Widget _functionButton(BuildContext context){
 
+  final _dbProcudtList = Provider.of<List<ProductModel>>(context);
+  final _dbCategoryList = Provider.of<List<CategoryModel>>(context);
+
   var size = MediaQuery.of(context).size;
   const double itemHeight = 250;
   final double itemWidth = size.width / 2;
@@ -128,7 +133,9 @@ Widget _functionButton(BuildContext context){
       children: [
         InkWell(
           splashColor: Colors.transparent,
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ProductListView())),
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => 
+            ProductListView(productList: _dbProcudtList))
+          ),
           child: _functionButtonItemView(
             const Icon(Icons.widgets, size: 30,), 
             '商品管理'
@@ -136,7 +143,8 @@ Widget _functionButton(BuildContext context){
         ),
         InkWell(
           splashColor: Colors.transparent,
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const CatergoryListView(selectOpen: false, selectedList: [],))),
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => 
+            CatergoryListView(categoryList: _dbCategoryList, selectOpen: false, selectedList: [],))),
           child: _functionButtonItemView(
             const Icon(Icons.category_outlined, size: 30,), 
             '類別管理'
@@ -162,7 +170,7 @@ Widget _functionButton(BuildContext context){
           splashColor: Colors.transparent,
           onTap: (){},
           child: _functionButtonItemView(
-            const Icon(Icons.outbox_rounded, size: 30,), 
+            const Icon(Icons.autorenew, size: 30,), 
             '退貨管理'
           ),
         ),
@@ -249,15 +257,7 @@ Widget _orderListView(BuildContext context){
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index){
             return orderReceiveModel[index].isComplete == true ? Container() :
-            GestureDetector(
-              onTap: () => Navigator.push(
-                context, MaterialPageRoute(builder: (context) => ReceiveDetails(
-                  reference: orderReceiveModel[index].ref,
-                  docId: orderReceiveModel[index].docId
-                )
-              )),
-              child: OrderItemView(orderReceiveModel: orderReceiveModel[index]),
-            );
+            OrderItemView(orderReceiveModel: orderReceiveModel[index]);
           }
         )
       ],

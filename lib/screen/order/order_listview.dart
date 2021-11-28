@@ -1,5 +1,5 @@
 import 'package:alternate_store_cms/screen/order/order_itemviews.dart';
-import 'package:alternate_store_cms/screen/order/receive_details.dart';
+import 'package:alternate_store_cms/screen/order/order_details.dart';
 import 'package:flutter/material.dart';
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
@@ -28,14 +28,7 @@ class _OrderListViewState extends State<OrderListView> {
         itemCount: orderReceiveModel.length,
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 150),
         itemBuilder: (context, index){
-          return GestureDetector(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiveDetails(
-                reference: orderReceiveModel[index].ref, 
-                docId: orderReceiveModel[index].docId
-              )
-            )),
-            child: OrderItemView(orderReceiveModel: orderReceiveModel[index]),
-          );
+          return OrderItemView(orderReceiveModel: orderReceiveModel[index]);
         }
       ),
     );

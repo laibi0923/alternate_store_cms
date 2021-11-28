@@ -17,6 +17,7 @@ import 'package:alternate_store_cms/custom_snackbar.dart';
 import 'package:alternate_store_cms/randomstring_gender.dart';
 import 'package:alternate_store_cms/service/product_database.dart';
 import 'package:alternate_store_cms/inputvalue_dialog.dart';
+import 'package:provider/provider.dart';
 
 
 class ProductEditor extends StatefulWidget {
@@ -428,9 +429,10 @@ class _ProductEditorState extends State<ProductEditor> {
   }
 
   //  Add Product Categoty
-  Future<void> _addCategory() async {
+  Future<void> _addCategory(List<CategoryModel> dbCategoryList) async {
 
-    List<CategoryModel> selectedList = await Navigator.push(context, MaterialPageRoute(builder: (context) => CatergoryListView(selectOpen: true, selectedList: _categoryList,)));
+    List<CategoryModel> selectedList = await Navigator.push(context, MaterialPageRoute(builder: (context) => 
+      CatergoryListView(categoryList: dbCategoryList, selectOpen: true, selectedList: _categoryList,)));
 
     // ignore: unnecessary_null_comparison
     if(selectedList != null){
@@ -503,7 +505,6 @@ class _ProductEditorState extends State<ProductEditor> {
             }
           }
         }
-        print(_categoryList);
       }
       
     }
@@ -522,6 +523,8 @@ class _ProductEditorState extends State<ProductEditor> {
 
   @override
   Widget build(BuildContext context) {
+
+    final _dbCategoryList = Provider.of<List<CategoryModel>>(context);
     return Scaffold(
       backgroundColor: const Color(backgroundDark),
       body: Stack(
@@ -530,7 +533,7 @@ class _ProductEditorState extends State<ProductEditor> {
           ListView(
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.only(bottom: 150),
+            padding: const EdgeInsets.only(bottom: 150, top: 40),
             children: [
     
               const Padding(
@@ -1001,7 +1004,7 @@ class _ProductEditorState extends State<ProductEditor> {
     
               // Category
               GestureDetector(
-                onTap: () => _addCategory(),
+                onTap: () => _addCategory(_dbCategoryList),
                 child: Container(
                   margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                   decoration: BoxDecoration(
