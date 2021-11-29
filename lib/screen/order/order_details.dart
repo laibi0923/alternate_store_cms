@@ -83,7 +83,7 @@ class ReceiveDetails extends StatelessWidget {
             // Text(docId.toUpperCase()),
             const Spacer(),
             IconButton(
-              onPressed: () => Navigator.pop(context), 
+              onPressed: () => Navigator.pop(context, true), 
               icon: const Icon(Icons.close, color: Colors.white)
             )
           ],

@@ -229,8 +229,6 @@ Widget _orderListView(BuildContext context){
       }
     }
   }
-
-  
   
   return Padding(
     padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
@@ -257,7 +255,16 @@ Widget _orderListView(BuildContext context){
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index){
             return orderReceiveModel[index].isComplete == true ? Container() :
-            OrderItemView(orderReceiveModel: orderReceiveModel[index]);
+            GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ReceiveDetails(
+                  reference: orderReceiveModel[index].ref, 
+                  docId: orderReceiveModel[index].docId,
+                  status: orderReceiveModel[index].isComplete
+                )));
+              },
+              child: OrderItemView(orderReceiveModel: orderReceiveModel[index])
+            );
           }
         )
       ],
