@@ -1,8 +1,10 @@
 // @dart=2.9
 import 'package:alternate_store_cms/constants.dart';
+import 'package:alternate_store_cms/model/banner_model.dart';
 import 'package:alternate_store_cms/screen/home_wapper.dart';
 import 'package:alternate_store_cms/screen/order/order_listview.dart';
 import 'package:alternate_store_cms/screen/proudct/product_listview.dart';
+import 'package:alternate_store_cms/service/banner_service.dart';
 import 'package:alternate_store_cms/service/member_database.dart';
 import 'package:alternate_store_cms/service/product_database.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -51,10 +53,14 @@ class MyApp extends StatelessWidget {
     
     return MultiProvider(
       providers: [
+        //  Banner
+        StreamProvider.value(value: BannerService().getBanner, initialData: null,),
+        //  Category
         StreamProvider.value(value: CategoryDatabase().getCategory, initialData: null,),
+        //  Private Policy
         StreamProvider.value(value: PolicyService().getPrivatePolicyContent, initialData: PrivatePolicyModel.initialData()),
+        //  Return Policy
         StreamProvider.value(value: PolicyService().getReturnPolicyContent, initialData: ReturnPolicyModel.initialData()),
-
         // ignore: missing_required_param
         StreamProvider.value(value: CouponService().getCouponCode),
         // ignore: missing_required_param
@@ -65,7 +71,6 @@ class MyApp extends StatelessWidget {
         StreamProvider.value(value: ProductDatabase().showProduct),
         // ignore: missing_required_param
         StreamProvider.value(value: MemberDatabase().showMember),
-
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

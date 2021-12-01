@@ -149,6 +149,7 @@ class ProductDatabase {
     }
   }
 
+  //  剷除現有商品圖片
   void removeExistingProductImage(String productNumber, List list){
     DocumentReference xref = FirebaseFirestore.instance.collection('product').doc(productNumber);
     xref.update({
@@ -156,6 +157,7 @@ class ProductDatabase {
     });
   }
 
+  //  剷除現有商品顏色圖片
   void removeExistingColorImage(String productNumber, List list){
     DocumentReference xref = FirebaseFirestore.instance.collection('product').doc(productNumber);
     xref.update({
@@ -163,6 +165,7 @@ class ProductDatabase {
     });
   }
 
+  //  剷除商品
   void delProduct(String productNumber){
     DocumentReference xref = FirebaseFirestore.instance.collection('product').doc(productNumber);
     xref.delete();

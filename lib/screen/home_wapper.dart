@@ -2,6 +2,7 @@ import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/model/category_model.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
 import 'package:alternate_store_cms/model/product_model.dart';
+import 'package:alternate_store_cms/screen/banner/banner_listview.dart';
 import 'package:alternate_store_cms/screen/category/catergory_listview.dart';
 import 'package:alternate_store_cms/screen/coupon/coupon_listview.dart';
 import 'package:alternate_store_cms/screen/member/member_listview.dart';
@@ -131,6 +132,16 @@ Widget _functionButton(BuildContext context){
         childAspectRatio: (itemWidth / itemHeight)
       ),
       children: [
+        InkWell(
+          splashColor: Colors.transparent,
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => 
+            const BannerListView())
+          ),
+          child: _functionButtonItemView(
+            const Icon(Icons.widgets, size: 30,), 
+            'Banner'
+          ),
+        ),
         InkWell(
           splashColor: Colors.transparent,
           onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => 
