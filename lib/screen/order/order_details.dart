@@ -261,7 +261,10 @@ Container _buildProductItemView(Map<String, dynamic> orderProductData){
                 margin: const EdgeInsets.only(right: 20),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: cachedNetworkImage(orderProductData['PRODUCT_IMAGE'])
+                  child: cachedNetworkImage(
+                    orderProductData['PRODUCT_IMAGE'],
+                    BoxFit.cover
+                  )
                 ),
               ),
               

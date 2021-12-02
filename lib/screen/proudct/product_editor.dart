@@ -887,7 +887,8 @@ class _ProductEditorState extends State<ProductEditor> {
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.circular(999),
                                                 child: cachedNetworkImage(
-                                                  _dbColorList[index]['COLOR_IMAGE']
+                                                  _dbColorList[index]['COLOR_IMAGE'],
+                                                  BoxFit.cover
                                                 ),
                                               ),
                                             ),

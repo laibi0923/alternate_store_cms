@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-Widget cachedNetworkImage(String imageUrl){
+Widget cachedNetworkImage(String imageUrl, BoxFit boxfit){
   return CachedNetworkImage(
     imageUrl: imageUrl,
     placeholder: (context, url) {
@@ -23,6 +23,6 @@ Widget cachedNetworkImage(String imageUrl){
         ),
       );
     },
-    fit: BoxFit.cover,
+    fit: boxfit,
   );
 }

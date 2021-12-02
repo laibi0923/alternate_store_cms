@@ -89,6 +89,7 @@ class BannerListView extends StatelessWidget {
         child: 
         CachedNetworkImage(
           imageUrl: uri,
+          fit: BoxFit.cover,
         )
       )
     );

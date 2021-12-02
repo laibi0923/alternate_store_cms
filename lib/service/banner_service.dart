@@ -1,10 +1,8 @@
 import 'dart:io';
-
 import 'package:alternate_store_cms/model/banner_model.dart';
 import 'package:alternate_store_cms/randomstring_gender.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
 
 class BannerService{
   final CollectionReference _ref = FirebaseFirestore.instance.collection('banner');
@@ -26,7 +24,7 @@ class BannerService{
   }
 
   //  上載 Banner 
-  void uploadBanner(String url, String queryString){
+  Future<void> uploadBanner(String url, String queryString) async{
     try{
     DocumentReference xref = FirebaseFirestore.instance.collection('banner').doc();
     FirebaseFirestore.instance.runTransaction((transaction) async {
@@ -45,6 +43,20 @@ class BannerService{
     }
   }
 
+  //  
+  Future<void> updateBanner(String docId, String queryString, String imagePatch) async {
+    DocumentReference xref = FirebaseFirestore.instance.collection('banner').doc(docId);
+    xref.update({
+      'KEY' : queryString,
+      'URL' : imagePatch
+    });
+  }
+
+  //  
+  void removeBanner(String docId){
+    DocumentReference xref = FirebaseFirestore.instance.collection('banner').doc(docId);
+    xref.delete();
+  }
 
 
 }

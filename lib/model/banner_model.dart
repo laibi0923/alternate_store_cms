@@ -14,8 +14,8 @@ class BannerModel {
 
   BannerModel.fromFirestore(Map<String, dynamic> dataMap, String id) :
     createDate = dataMap['CREATE_DATE'],
-    quetyString = dataMap[''],
-    uri = dataMap[''],
+    quetyString = dataMap['KEY'],
+    uri = dataMap['URL'],
     docId = id;
 
 }
