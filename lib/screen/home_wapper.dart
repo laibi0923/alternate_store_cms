@@ -139,7 +139,7 @@ Widget _functionButton(BuildContext context){
           ),
           child: _functionButtonItemView(
             const Icon(Icons.widgets, size: 30,), 
-            'Banner'
+            '封面'
           ),
         ),
         InkWell(

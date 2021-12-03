@@ -41,6 +41,10 @@ class BannerListView extends StatelessWidget {
       automaticallyImplyLeading: false,
       title: Row(
         children: [
+          const Text(
+            '封面',
+            style: TextStyle(fontSize: 24),
+          ),
           const Spacer(),
           IconButton(
             onPressed: () => Navigator.pop(context), 

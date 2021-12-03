@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:alternate_store_cms/comfirmation_dialog.dart';
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/custom_cachednetworkimage.dart';
+import 'package:alternate_store_cms/custom_snackbar.dart';
 import 'package:alternate_store_cms/customize_textfield.dart';
 import 'package:alternate_store_cms/model/banner_model.dart';
 import 'package:alternate_store_cms/service/banner_service.dart';
@@ -110,12 +111,12 @@ class _BannerEditorState extends State<BannerEditor> {
   Future<void> _uploadBanner(String queryString, String imagePatch) async {
 
     if(queryString.isEmpty){
-      print('1');
+      CustomSnackBar().show(context, '請輸入關鍵字');
       return;
     }
 
     if(imagePatch.isEmpty && widget.editMode == false){
-      print('2');
+      CustomSnackBar().show(context, '請選擇圖片');
       return;
     }
 
