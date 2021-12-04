@@ -44,7 +44,7 @@ class ReceiveDetails extends StatelessWidget {
           'ORDER_PRODUCT' : newDataList
         });
 
-        ProductDatabase().soldProduct(dataList[index]['SKU']);
+        ProductDatabase().soldProductCounter(dataList[index]['PRODUCT_NO']);
 
         //  判斷每項出貨狀態 = True總和如相等於貨品數目, 則更新 Order ISCOMPLETE
         int isCompleteProduct = 0;

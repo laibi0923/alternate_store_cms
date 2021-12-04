@@ -43,7 +43,7 @@ class BannerService{
     }
   }
 
-  //  
+  //  更新封面
   Future<void> updateBanner(String docId, String queryString, String imagePatch) async {
     DocumentReference xref = FirebaseFirestore.instance.collection('banner').doc(docId);
     xref.update({
@@ -52,7 +52,7 @@ class BannerService{
     });
   }
 
-  //  
+  //  剷除封面
   void removeBanner(String docId){
     DocumentReference xref = FirebaseFirestore.instance.collection('banner').doc(docId);
     xref.delete();

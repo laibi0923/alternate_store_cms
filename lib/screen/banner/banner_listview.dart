@@ -4,6 +4,7 @@ import 'package:alternate_store_cms/screen/banner/banner_editor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class BannerListView extends StatelessWidget {
   const BannerListView({ Key? key }) : super(key: key);
@@ -42,7 +43,7 @@ class BannerListView extends StatelessWidget {
       title: Row(
         children: [
           const Text(
-            '封面',
+            '封面列表',
             style: TextStyle(fontSize: 24),
           ),
           const Spacer(),
@@ -76,9 +77,19 @@ class BannerListView extends StatelessWidget {
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 150),
       itemCount: list.length,
       itemBuilder: (context, index){
-        return GestureDetector(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => BannerEditor(bannerModel: list[index], editMode: true,))),
-          child: _buildBannerItemView(list[index].uri)
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: Text(
+                DateFormat('yyyy/MM/dd').format(DateTime.fromMicrosecondsSinceEpoch(list[index].createDate.microsecondsSinceEpoch)),
+              )
+            ),
+            GestureDetector(
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => BannerEditor(bannerModel: list[index], editMode: true,))),
+              child: _buildBannerItemView(list[index].uri)
+            ),
+          ],
         );
       }
     );

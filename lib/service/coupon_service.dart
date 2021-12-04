@@ -15,6 +15,7 @@ class CouponService{
       CouponModel.fromFirestore(doc.data(), doc.id)).toList());
   }
 
+  //  新增折扣優惠
   addCoupon(CouponModel couponModel){
     _mFirestore.collection('coupon').doc().set({
       'CREATE_DATE' : couponModel.createDate,
@@ -27,6 +28,7 @@ class CouponService{
     });
   }
 
+  //  更新折扣優惠
   updateCoupon(String docId, CouponModel couponModel){
     _mFirestore.collection('coupon').doc(docId).update({
       'CREATE_DATE' : couponModel.createDate,
@@ -39,6 +41,7 @@ class CouponService{
     });
   }
 
+  //  剷除折扣優惠
   delCoupon(String docId){
     _mFirestore.collection('coupon').doc(docId).delete();
   }

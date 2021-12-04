@@ -30,7 +30,6 @@ class ProductDatabase {
   //  以用戶輸入字元取得貨品
   Stream<List<ProductModel>> searchProduct(String queryString){
     return _productRef
-      //.where('PRODUCT_NAME', isEqualTo: queryString)
       .where('CATEGORY', arrayContains: queryString)
       .snapshots()
       .map((list) => list.docs
@@ -172,19 +171,21 @@ class ProductDatabase {
   }
 
   //  賣出貨品計算 (CMS)
-  soldProduct(String sku) async {
-    _productRef.where('field', isEqualTo: sku).get().then((value) {
-
-      String docid = value.docs[0].reference.id;
-
+  void soldProductCounter(String sku) async {
+    print('SKU : $sku');
+    _productRef.where('PRODUCT_NO', isEqualTo: sku).get().then((value) {
+      print('Found Sku in firebase');
       int sold = value.docs[0]['SOLD'];
+      print('GetSold : $sold');
       int xSold = sold + 1;
-
-      _productRef.doc(docid).update({
+      _productRef.doc(sku).update({
         'SOLD' : xSold
       });
+
+
     });
-    
   }
+
+
 
 }

@@ -227,7 +227,8 @@ class _BannerEditorState extends State<BannerEditor> {
                 height: 200,
                 decoration: BoxDecoration(
                   color: const Color(primaryDark),
-                  image: DecorationImage(
+                  image: imagePatch.isEmpty ? null :
+                  DecorationImage(
                     image: FileImage(File(imagePatch)),
                     fit: BoxFit.cover
                   )

@@ -14,7 +14,6 @@ class CategoryDatabase{
 
   //  新增
   void addCategory(CategoryModel categoryModel){
-
     DocumentReference docRef = _ref.doc();
     FirebaseFirestore.instance.runTransaction((transaction) async {
       //DocumentSnapshot snapshot = await transaction.get(docRef);
@@ -26,11 +25,12 @@ class CategoryDatabase{
     });
   }
 
-  // 刪除
+  //  刪除
   void delCategory(String docId){
     _ref.doc(docId).delete();
   }
 
+  //  設定為快速預覽
   void setQuickSearch (String docId, bool isSeted){ 
     if(isSeted == true){
       _ref.doc(docId).update({
