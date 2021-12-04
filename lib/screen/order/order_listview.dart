@@ -108,6 +108,7 @@ class _OrderListViewState extends State<OrderListView> {
   
   Widget _orderListView(List<OrderReceiveModel> list){
 
+    // ignore: unnecessary_null_comparison
     if(list == null){
       return const Center(
         child: CircularProgressIndicator(color: Colors.grey),

@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_null_comparison
-
 import 'dart:ui';
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/inputvalue_dialog.dart';
@@ -261,6 +259,7 @@ class _CatergoryListViewState extends State<CatergoryListView> {
 
   Widget _categoryListView(List<CategoryModel> list){
 
+    // ignore: unnecessary_null_comparison
     if(list == null){
       return const Center(
         child: CircularProgressIndicator(color: Colors.grey),

@@ -2,7 +2,6 @@
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/currency_textview.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
-import 'package:alternate_store_cms/screen/order/order_details.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

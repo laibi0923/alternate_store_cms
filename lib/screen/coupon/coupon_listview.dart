@@ -1,7 +1,6 @@
 import 'package:alternate_store_cms/constants.dart';
 import 'package:alternate_store_cms/model/coupon_model.dart';
 import 'package:alternate_store_cms/screen/coupon/coupon_editor.dart';
-import 'package:alternate_store_cms/service/coupon_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -129,6 +128,7 @@ class _CouponListViewState extends State<CouponListView> {
   
   Widget _couponListView(List<CouponModel> list){
 
+    // ignore: unnecessary_null_comparison
     if(list == null){
       return const Center(
         child: CircularProgressIndicator(color: Colors.grey),

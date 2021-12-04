@@ -1,4 +1,5 @@
 import 'package:alternate_store_cms/constants.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:alternate_store_cms/model/user_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class MemberListView extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(backgroundDark),
       appBar: _buildSearchAppBar(context),
+      // ignore: unnecessary_null_comparison
       body: _userModel == null ? Container() :
       ListView.builder(
         physics: const BouncingScrollPhysics(),

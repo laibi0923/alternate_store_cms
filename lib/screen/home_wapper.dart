@@ -1,5 +1,4 @@
 import 'package:alternate_store_cms/constants.dart';
-import 'package:alternate_store_cms/model/category_model.dart';
 import 'package:alternate_store_cms/model/orderreceive_model.dart';
 import 'package:alternate_store_cms/model/product_model.dart';
 import 'package:alternate_store_cms/screen/banner/banner_listview.dart';
@@ -62,15 +61,13 @@ Widget _customHeader(BuildContext context){
   DateTime now = DateTime.now();
   final formatter = NumberFormat("###,###,###,##0", "en");
 
-  if(orderReceiveModel != null){
-    for(int i = 0; i < orderReceiveModel.length; i++){
-      if(
-        orderReceiveModel[i].orderDate.toDate().year == now.year &&
-        orderReceiveModel[i].orderDate.toDate().month == now.month &&
-        orderReceiveModel[i].orderDate.toDate().day == now.day
-      ){
-        turnover = turnover + orderReceiveModel[i].xtotalAmount;
-      }
+  for(int i = 0; i < orderReceiveModel.length; i++){
+    if(
+      orderReceiveModel[i].orderDate.toDate().year == now.year &&
+      orderReceiveModel[i].orderDate.toDate().month == now.month &&
+      orderReceiveModel[i].orderDate.toDate().day == now.day
+    ){
+      turnover = turnover + orderReceiveModel[i].xtotalAmount;
     }
   }
 
@@ -109,7 +106,6 @@ Widget _customHeader(BuildContext context){
 Widget _functionButton(BuildContext context){
 
   final _dbProcudtList = Provider.of<List<ProductModel>>(context);
-  final _dbCategoryList = Provider.of<List<CategoryModel>>(context);
 
   var size = MediaQuery.of(context).size;
   const double itemHeight = 250;
@@ -231,6 +227,7 @@ Widget _orderListView(BuildContext context){
 
   int _notCompleteCounter = 0;
 
+  // ignore: unnecessary_null_comparison
   if(orderReceiveModel == null){
     return Container();
   } else {

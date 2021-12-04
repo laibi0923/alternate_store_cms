@@ -172,11 +172,8 @@ class ProductDatabase {
 
   //  賣出貨品計算 (CMS)
   void soldProductCounter(String sku) async {
-    print('SKU : $sku');
     _productRef.where('PRODUCT_NO', isEqualTo: sku).get().then((value) {
-      print('Found Sku in firebase');
       int sold = value.docs[0]['SOLD'];
-      print('GetSold : $sold');
       int xSold = sold + 1;
       _productRef.doc(sku).update({
         'SOLD' : xSold

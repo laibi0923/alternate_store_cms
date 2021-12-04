@@ -497,12 +497,10 @@ class _ProductEditorState extends State<ProductEditor> {
       _inStock = widget.productModel.inStock;
       _refundable = widget.productModel.refundable;
 
-      if(widget.categoryModel != null){
-        for(int i = 0; i < widget.productModel.category.length; i++){
-          for(int k = 0; k < widget.categoryModel.length; k++){
-            if(widget.productModel.category[i] == widget.categoryModel[k].name){
-              _categoryList.add(widget.categoryModel[k]);
-            }
+      for(int i = 0; i < widget.productModel.category.length; i++){
+        for(int k = 0; k < widget.categoryModel.length; k++){
+          if(widget.productModel.category[i] == widget.categoryModel[k].name){
+            _categoryList.add(widget.categoryModel[k]);
           }
         }
       }

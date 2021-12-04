@@ -24,7 +24,6 @@ class _BannerEditorState extends State<BannerEditor> {
   final TextEditingController _searchKeyTextController = TextEditingController();
   late String imagePatch = '';
 
-
   //  Show Loading Screen
   void showLoadingIndicator() {
     showDialog(
@@ -94,7 +93,7 @@ class _BannerEditorState extends State<BannerEditor> {
     try {
       xfile = (await ImagePicker().pickImage(source: ImageSource.gallery))!; 
 
-      if(xfile != null){
+      if(xfile.path.isNotEmpty){
         setState(() {
           imagePatch = xfile.path;
         });

@@ -120,7 +120,7 @@ class _ProductListViewState extends State<ProductListView> {
         Navigator.push(context, MaterialPageRoute(builder: (context) => ProductEditor(
           editMode: false, 
           productModel: ProductModel.initialData(),
-          categoryModel: []
+          categoryModel: const []
           )
         )
       ),

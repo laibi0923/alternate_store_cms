@@ -58,6 +58,7 @@ class BannerListView extends StatelessWidget {
 
   Widget _buildBannerListView(List<BannerModel> list){
 
+    // ignore: unnecessary_null_comparison
     if(list == null){
       return const Center(
         child: CircularProgressIndicator(color: Colors.grey),
