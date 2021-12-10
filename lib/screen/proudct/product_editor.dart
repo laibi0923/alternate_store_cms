@@ -239,12 +239,12 @@ class _ProductEditorState extends State<ProductEditor> {
           0, 
           _productNumberController.text, 
           _productNameController.text, 
-          _tempProductColorList, 
+          _tempProductImageList, 
           _descriptionController.text, 
           _orginalPrice, 
           _discountPrice, 
           _sizeList, 
-          _tempProductImageList, 
+          _tempProductColorList, 
           _tagController.text, 
           _tempCategoryList, 
           _refundable
@@ -308,7 +308,7 @@ class _ProductEditorState extends State<ProductEditor> {
     }
   }
 
-  // Remove Product Image
+  //  Remove Product Image
   void _removeProductImage(int index){
     setState(() {
       _localProductImageList!.removeAt(index);  
@@ -317,6 +317,12 @@ class _ProductEditorState extends State<ProductEditor> {
 
   //  Remove product Image from database
   Future<void> _removeDBProductImage(int index) async {
+
+    if(_dbProductImageList.length == 1){
+      CustomSnackBar().show(context, '最少需要一張產品圖片');
+      return ;
+    }
+
     bool result = await showDialog(
       context: context, 
       builder: (BuildContext context){
