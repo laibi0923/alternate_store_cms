@@ -80,7 +80,6 @@ class ReceiveDetails extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Row(
           children: [
-            // Text(docId.toUpperCase()),
             const Spacer(),
             IconButton(
               onPressed: () => Navigator.pop(context, true), 

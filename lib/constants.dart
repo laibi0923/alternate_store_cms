@@ -17,4 +17,4 @@ const double xTextSize11 = 11;
 
 
 //  不可退貨字句
-const String refundableText = '*** 此貨品為不可退貨項目 ***';
+const String refundableText = '*** 不可退貨 ***';

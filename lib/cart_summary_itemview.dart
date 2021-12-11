@@ -29,9 +29,15 @@ class CartSummaryItemView extends StatelessWidget {
               ],
             )
           ),
-          Text(
-            value,
-            style: isbold == true ? const TextStyle(fontWeight: FontWeight.bold, fontSize: 16) : null,
+          SizedBox(
+            width: 200,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                value,
+                style: isbold == true ? const TextStyle(fontWeight: FontWeight.bold, fontSize: 16) : null,
+              ),
+            ),
           ),
         ],
       ),
