@@ -1,13 +1,13 @@
-import 'package:alternate_store_cms/currency_textview.dart';
+import 'package:asher_store_cms/currency_textview.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:alternate_store_cms/cart_summary_itemview.dart';
-import 'package:alternate_store_cms/comfirmation_dialog.dart';
-import 'package:alternate_store_cms/constants.dart';
+import 'package:asher_store_cms/cart_summary_itemview.dart';
+import 'package:asher_store_cms/comfirmation_dialog.dart';
+import 'package:asher_store_cms/constants.dart';
 import 'package:intl/intl.dart';
-import 'package:alternate_store_cms/service/product_database.dart';
-import 'package:alternate_store_cms/custom_cachednetworkimage.dart';
+import 'package:asher_store_cms/service/product_database.dart';
+import 'package:asher_store_cms/custom_cachednetworkimage.dart';
 
 class ReceiveDetails extends StatelessWidget {
   final DocumentReference reference;

@@ -5,6 +5,6 @@
 
 version:
   revision: 8bc64b67a12b19017657ef9621bdd3003549032b
-  channel: alternate_store
+  channel: asher_store
 
 project_type: app

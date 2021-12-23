@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:alternate_store_cms/constants.dart';
+import 'package:asher_store_cms/constants.dart';
 
 Widget inputValueDialog(BuildContext context, String title, String hints){
 

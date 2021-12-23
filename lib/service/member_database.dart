@@ -1,5 +1,5 @@
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:alternate_store_cms/model/user_model.dart';
+import 'package:asher_store_cms/model/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MemberDatabase{

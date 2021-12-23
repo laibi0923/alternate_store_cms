@@ -1,6 +1,6 @@
-import 'package:alternate_store_cms/constants.dart';
+import 'package:asher_store_cms/constants.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:alternate_store_cms/model/user_model.dart';
+import 'package:asher_store_cms/model/user_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

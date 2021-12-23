@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:alternate_store_cms/model/paymentmethod_model.dart';
-import 'package:alternate_store_cms/randomstring_gender.dart';
+import 'package:asher_store_cms/model/paymentmethod_model.dart';
+import 'package:asher_store_cms/randomstring_gender.dart';
 
 class PaymentMethodService{
 

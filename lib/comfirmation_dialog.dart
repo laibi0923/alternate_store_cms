@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:alternate_store_cms/constants.dart';
+import 'package:asher_store_cms/constants.dart';
 
 
 Widget comfirmationDialog(BuildContext context, String title, String content, String submitBtnText, String cancelBtnText){

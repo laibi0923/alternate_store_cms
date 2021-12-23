@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:alternate_store_cms/model/category_model.dart';
+import 'package:asher_store_cms/model/category_model.dart';
 
 class CategoryDatabase{
 

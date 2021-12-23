@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1009871733855-pam95p8jjs91sub28gd3r0sk3lq6u62t.apps.googleusercontent.com</string>
+	<string>222001330950-a2cdbp1pocpdjf12s12rp6lg0dujhqg0.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1009871733855-pam95p8jjs91sub28gd3r0sk3lq6u62t</string>
+	<string>com.googleusercontent.apps.222001330950-a2cdbp1pocpdjf12s12rp6lg0dujhqg0</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAPx-A8m49_97nLxzyt4JrFqXpo_kRcsTk</string>
+	<string>AIzaSyCE3l7-FKPJS2HTidhRrJov8Mp-qN0b6vg</string>
 	<key>GCM_SENDER_ID</key>
-	<string>1009871733855</string>
+	<string>222001330950</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.alternate.alternateStoreCms</string>
+	<string>com.asher.asherStoreCms</string>
 	<key>PROJECT_ID</key>
-	<string>alternate-store</string>
+	<string>asher-177a1</string>
 	<key>STORAGE_BUCKET</key>
-	<string>alternate-store.appspot.com</string>
+	<string>asher-177a1.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1009871733855:ios:5bec8be210c78b6e1f07ea</string>
-	<key>DATABASE_URL</key>
-	<string>https://alternate-store-default-rtdb.firebaseio.com</string>
+	<string>1:222001330950:ios:fe2e04449e97921b6e3c87</string>
 </dict>
 </plist>

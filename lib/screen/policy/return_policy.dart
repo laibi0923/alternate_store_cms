@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:alternate_store_cms/constants.dart';
-import 'package:alternate_store_cms/model/returnpolicy_model.dart';
+import 'package:asher_store_cms/constants.dart';
+import 'package:asher_store_cms/model/returnpolicy_model.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:alternate_store_cms/service/policy_service.dart';
+import 'package:asher_store_cms/service/policy_service.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 

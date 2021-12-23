@@ -1,77 +1,40 @@
 {
   "project_info": {
-    "project_number": "1009871733855",
-    "firebase_url": "https://alternate-store-default-rtdb.firebaseio.com",
-    "project_id": "alternate-store",
-    "storage_bucket": "alternate-store.appspot.com"
+    "project_number": "222001330950",
+    "project_id": "asher-177a1",
+    "storage_bucket": "asher-177a1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1009871733855:android:13c9805d36ae49d31f07ea",
+        "mobilesdk_app_id": "1:222001330950:android:f00c477c020afd6a6e3c87",
         "android_client_info": {
-          "package_name": "com.alternate.alternate_store"
+          "package_name": "com.asher.asher_store_cms"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1009871733855-rlrgs7khre3tqfnng05re91lgpgejd4l.apps.googleusercontent.com",
+          "client_id": "222001330950-q6s32qdrlr67rf34i7h8fg00u54mebqt.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCrxEGp9eNkbgQ2EG4fYfOCKoqJhezS2Ac"
+          "current_key": "AIzaSyDKKflhGPvAX28eNFAprZVGzb9I7lHwBn8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1009871733855-rlrgs7khre3tqfnng05re91lgpgejd4l.apps.googleusercontent.com",
+              "client_id": "222001330950-q6s32qdrlr67rf34i7h8fg00u54mebqt.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "1009871733855-l8sc672nddii02l0hchj1e259vda2aho.apps.googleusercontent.com",
+              "client_id": "222001330950-a2cdbp1pocpdjf12s12rp6lg0dujhqg0.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.alternate.alternateStore"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1009871733855:android:a794bacff7f138701f07ea",
-        "android_client_info": {
-          "package_name": "com.alternate.alternate_store_cms"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1009871733855-rlrgs7khre3tqfnng05re91lgpgejd4l.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCrxEGp9eNkbgQ2EG4fYfOCKoqJhezS2Ac"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1009871733855-rlrgs7khre3tqfnng05re91lgpgejd4l.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1009871733855-l8sc672nddii02l0hchj1e259vda2aho.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.alternate.alternateStore"
+                "bundle_id": "com.asher.asherStoreCms"
               }
             }
           ]

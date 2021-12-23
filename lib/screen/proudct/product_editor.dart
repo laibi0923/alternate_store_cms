@@ -1,22 +1,22 @@
 import 'dart:io';
-import 'package:alternate_store_cms/comfirmation_dialog.dart';
-import 'package:alternate_store_cms/custom_cachednetworkimage.dart';
-import 'package:alternate_store_cms/screen/category/catergory_listview.dart';
+import 'package:asher_store_cms/comfirmation_dialog.dart';
+import 'package:asher_store_cms/custom_cachednetworkimage.dart';
+import 'package:asher_store_cms/screen/category/catergory_listview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:alternate_store_cms/constants.dart';
-import 'package:alternate_store_cms/currency_formatter.dart';
-import 'package:alternate_store_cms/customize_textfield.dart';
-import 'package:alternate_store_cms/loading_indicator.dart';
-import 'package:alternate_store_cms/model/category_model.dart';
-import 'package:alternate_store_cms/model/product_model.dart';
-import 'package:alternate_store_cms/custom_snackbar.dart';
-import 'package:alternate_store_cms/randomstring_gender.dart';
-import 'package:alternate_store_cms/service/product_database.dart';
-import 'package:alternate_store_cms/inputvalue_dialog.dart';
+import 'package:asher_store_cms/constants.dart';
+import 'package:asher_store_cms/currency_formatter.dart';
+import 'package:asher_store_cms/customize_textfield.dart';
+import 'package:asher_store_cms/loading_indicator.dart';
+import 'package:asher_store_cms/model/category_model.dart';
+import 'package:asher_store_cms/model/product_model.dart';
+import 'package:asher_store_cms/custom_snackbar.dart';
+import 'package:asher_store_cms/randomstring_gender.dart';
+import 'package:asher_store_cms/service/product_database.dart';
+import 'package:asher_store_cms/inputvalue_dialog.dart';
 import 'package:provider/provider.dart';
 
 

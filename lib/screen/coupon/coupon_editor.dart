@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:alternate_store_cms/constants.dart';
-import 'package:alternate_store_cms/currency_formatter.dart';
-import 'package:alternate_store_cms/customize_textfield.dart';
-import 'package:alternate_store_cms/model/coupon_model.dart';
-import 'package:alternate_store_cms/custom_snackbar.dart';
-import 'package:alternate_store_cms/service/coupon_service.dart';
+import 'package:asher_store_cms/constants.dart';
+import 'package:asher_store_cms/currency_formatter.dart';
+import 'package:asher_store_cms/customize_textfield.dart';
+import 'package:asher_store_cms/model/coupon_model.dart';
+import 'package:asher_store_cms/custom_snackbar.dart';
+import 'package:asher_store_cms/service/coupon_service.dart';
 import 'package:intl/intl.dart';
 
 class CouponEditor extends StatefulWidget {

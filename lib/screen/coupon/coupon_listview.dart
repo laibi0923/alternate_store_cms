@@ -1,6 +1,6 @@
-import 'package:alternate_store_cms/constants.dart';
-import 'package:alternate_store_cms/model/coupon_model.dart';
-import 'package:alternate_store_cms/screen/coupon/coupon_editor.dart';
+import 'package:asher_store_cms/constants.dart';
+import 'package:asher_store_cms/model/coupon_model.dart';
+import 'package:asher_store_cms/screen/coupon/coupon_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
