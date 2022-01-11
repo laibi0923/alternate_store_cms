@@ -8,20 +8,22 @@ class CouponModel{
   final Timestamp validDate;
   final String remark;
   final bool unLimited;
+  final String docId;
 
-  CouponModel(this.createDate, this.couponCode, this.discountAmount, this.percentage, this.validDate, this.remark, this.unLimited);
+  CouponModel(this.createDate, this.couponCode, this.discountAmount, this.percentage, this.validDate, this.remark, this.unLimited, this.docId);
 
   factory CouponModel.initialData(){
-    return CouponModel(Timestamp.now(), '', 0.0, 0.0, Timestamp.now(), '', false);
+    return CouponModel(Timestamp.now(), '', 0.0, 0.0, Timestamp.now(), '', false, '');
   }
 
-  CouponModel.fromFirestore(Map<String, dynamic> dataMap) :
+  CouponModel.fromFirestore(Map<String, dynamic> dataMap, String id) :
     createDate = dataMap['CREATE_DATE'],
     couponCode = dataMap['CODE'],
     discountAmount = dataMap['DISCOUNT_AMOUNT'],
     percentage = dataMap['PERCENTAGE'],
     validDate = dataMap['VALID_DATE'],
     remark = dataMap['REMARK'],
-    unLimited = dataMap['UNLIMITED'];
+    unLimited = dataMap['UNLIMITED'],
+    docId = id;
 
 }

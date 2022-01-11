@@ -1,21 +1,24 @@
 // @dart=2.9
 import 'package:asher_store_cms/constants.dart';
 import 'package:asher_store_cms/screen/home_wapper.dart';
-import 'package:asher_store_cms/service/banner_service.dart';
-import 'package:asher_store_cms/service/member_database.dart';
-import 'package:asher_store_cms/service/product_database.dart';
+import 'package:asher_store_cms/screen/root/login_page.dart';
+import 'package:asher_store_cms/screen/root/root.dart';
+// import 'package:asher_store_cms/service/banner_service.dart';
+// import 'package:asher_store_cms/service/member_database.dart';
+// import 'package:asher_store_cms/service/product_database.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:asher_store_cms/model/privatepolicy_model.dart';
-import 'package:asher_store_cms/model/returnpolicy_model.dart';
-import 'package:asher_store_cms/service/category_database.dart';
-import 'package:asher_store_cms/service/coupon_service.dart';
-import 'package:asher_store_cms/service/order_service.dart';
-import 'package:asher_store_cms/service/paymentmethod_service.dart';
-import 'package:asher_store_cms/service/policy_service.dart';
-import 'package:provider/provider.dart';
+// import 'package:asher_store_cms/model/returnpolicy_model.dart';
+// import 'package:asher_store_cms/service/category_database.dart';
+// import 'package:asher_store_cms/service/coupon_service.dart';
+// import 'package:asher_store_cms/service/order_service.dart';
+// import 'package:asher_store_cms/service/paymentmethod_service.dart';
+// import 'package:asher_store_cms/service/policy_service.dart';
+import 'package:get/route_manager.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,70 +51,48 @@ class MyApp extends StatelessWidget {
       )
     );
     
-    return MultiProvider(
-      providers: [
-        //  Banner
-        StreamProvider.value(value: BannerService().getBanner, initialData: null,),
-        //  Category
-        StreamProvider.value(value: CategoryDatabase().getCategory, initialData: null,),
-        //  Private Policy
-        StreamProvider.value(value: PolicyService().getPrivatePolicyContent, initialData: PrivatePolicyModel.initialData()),
-        //  Return Policy
-        StreamProvider.value(value: PolicyService().getReturnPolicyContent, initialData: ReturnPolicyModel.initialData()),
-        // ignore: missing_required_param
-        StreamProvider.value(value: CouponService().getCouponCode),
-        // ignore: missing_required_param
-        StreamProvider.value(value: OrderService().getOrder,),
-        // ignore: missing_required_param
-        StreamProvider.value(value: PaymentMethodService().getPaymentMethod),
-        // ignore: missing_required_param
-        StreamProvider.value(value: ProductDatabase().showProduct),
-        // ignore: missing_required_param
-        StreamProvider.value(value: MemberDatabase().showMember),
-      ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        themeMode: ThemeMode.dark,
-        theme: ThemeData(
+    return GetMaterialApp(
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.dark,
+      theme: ThemeData(
     
-          brightness: Brightness.dark,
-          //  主顏色
-          //  White = Statusbar icon = black;  
-          //  Black = Statusbar icon = white;
-          primaryColor: Colors.grey,
-          
-          //  ???
-          //  primarySwatch: Colors.red,
-      
-          //  下劃線樣式
-          dividerColor: Colors.white54,
-      
-          //  
-          textSelectionTheme: const TextSelectionThemeData(
-            cursorColor: Colors.grey
-          ),
-      
-          //  文字樣式
-          primaryTextTheme: const TextTheme(
-          ),
-          
-          //  Appbar 樣式
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Color(backgroundDark),
-            titleTextStyle: TextStyle(
-              color: Colors.grey,
-              fontSize: 18,
-              fontWeight: FontWeight.bold
-            ),
-            iconTheme: IconThemeData(
-              color: Colors.black
-            ),
-          ),
+        brightness: Brightness.dark,
+        //  主顏色
+        //  White = Statusbar icon = black;  
+        //  Black = Statusbar icon = white;
+        primaryColor: Colors.grey,
+        
+        //  ???
+        //  primarySwatch: Colors.red,
+    
+        //  下劃線樣式
+        dividerColor: Colors.white54,
+    
+        //  
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Colors.grey
+        ),
+    
+        //  文字樣式
+        primaryTextTheme: const TextTheme(
         ),
         
-        home: const HomeWapper()
+        //  Appbar 樣式
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(backgroundDark),
+          titleTextStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 18,
+            fontWeight: FontWeight.bold
+          ),
+          iconTheme: IconThemeData(
+            color: Colors.black
+          ),
+        ),
       ),
+      
+      home: const RootPage()
     );
   }
 }

@@ -18,7 +18,7 @@ class CustomizeTextField extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
       margin: const EdgeInsets.only(top: 20),
       decoration: const BoxDecoration(
-        color: Color(primaryDark),
+        color: Color(backgroundDark),
         borderRadius: BorderRadius.all(Radius.circular(7))
       ),
       child: Column(

@@ -3,20 +3,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class CategoryModel {
   final Timestamp createDate;
   final String name;
-  bool quickSearch;
-  bool isSelect;
-  final String docId;
+  final bool quickSearch;
+  // final String docId;
 
-  CategoryModel(this.createDate, this.name, this.isSelect, this.quickSearch, this.docId);
+  CategoryModel(this.createDate, this.name, this.quickSearch);
 
   factory CategoryModel.initialData() {
-    return CategoryModel(Timestamp.now(), '', false, false, '');
+    return CategoryModel(Timestamp.now(), '', false,);
   }
 
-  CategoryModel.fromFirestore(Map<String, dynamic> dataMap, String id) :
+  CategoryModel.fromFirestore(Map<String, dynamic> dataMap) :
     createDate = dataMap['CREATE_DATE'],
     name = dataMap['NAME'],
-    quickSearch = dataMap ['QUICK_SEARCH'],
-    isSelect = false,
-    docId = id;
+    quickSearch = dataMap ['QUICK_SEARCH'];
+    // docId = id;
+    
 }
