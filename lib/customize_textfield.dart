@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:asher_store_cms/constants.dart';
 
@@ -18,7 +17,7 @@ class CustomizeTextField extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10, bottom: 10, right: 20, left: 20),
       margin: const EdgeInsets.only(top: 20),
       decoration: const BoxDecoration(
-        color: Color(backgroundDark),
+        color: Color(primaryDark),
         borderRadius: BorderRadius.all(Radius.circular(7))
       ),
       child: Column(

@@ -18,7 +18,7 @@ class ProductModel {
   List? category;
   bool? refundable;
 
-  ProductModel(this.createDate, this.lastModify, this.inStock, this.sold, this.views, this.productNo, this.productName, this.imagePatch, this.description, this.price, this.discountPrice, this.size, this.color, this.tag, this.category, this.refundable);
+  ProductModel({this.createDate, this.lastModify, this.inStock, this.sold, this.views, this.productNo, this.productName, this.imagePatch, this.description, this.price, this.discountPrice, this.size, this.color, this.tag, this.category, this.refundable});
 
   ProductModel.fromFirestore(Map<String, dynamic>? doc){
     createDate = doc?['CREATE_DATE'];

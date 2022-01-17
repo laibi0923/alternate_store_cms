@@ -1,33 +1,39 @@
-// @dart=2.9
 import 'package:asher_store_cms/constants.dart';
-import 'package:asher_store_cms/screen/home_wapper.dart';
-import 'package:asher_store_cms/screen/root/login_page.dart';
+import 'package:asher_store_cms/controller/auth_controller.dart';
+import 'package:asher_store_cms/controller/banner_controller.dart';
+import 'package:asher_store_cms/controller/categorylistview_controller.dart';
+import 'package:asher_store_cms/controller/memberlistview_controller.dart';
+import 'package:asher_store_cms/controller/orderlistview_controller.dart';
+import 'package:asher_store_cms/controller/privatepolicy_controller.dart';
+import 'package:asher_store_cms/controller/productlistview_controller.dart';
+import 'package:asher_store_cms/controller/refundlistview_controller.dart';
+import 'package:asher_store_cms/controller/refundpolicy_controller.dart';
+import 'package:asher_store_cms/controller/root_controller.dart';
 import 'package:asher_store_cms/screen/root/root.dart';
-// import 'package:asher_store_cms/service/banner_service.dart';
-// import 'package:asher_store_cms/service/member_database.dart';
-// import 'package:asher_store_cms/service/product_database.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:asher_store_cms/model/privatepolicy_model.dart';
-// import 'package:asher_store_cms/model/returnpolicy_model.dart';
-// import 'package:asher_store_cms/service/category_database.dart';
-// import 'package:asher_store_cms/service/coupon_service.dart';
-// import 'package:asher_store_cms/service/order_service.dart';
-// import 'package:asher_store_cms/service/paymentmethod_service.dart';
-// import 'package:asher_store_cms/service/policy_service.dart';
-import 'package:get/route_manager.dart';
-
+import 'package:get/get.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp().then((value) {
+    Get.put(AuthController());
+    Get.put(RootPageController());
+    Get.put(BannerController());
+    Get.put(ProductListViewController());
+    Get.put(CategoryListViewController());
+    Get.put(MemberListViewController());
+    Get.put(OrderListViewController());
+    Get.put(RefundListViewController());
+    Get.put(RefundPolicyController());
+    Get.put(PrivatePolicyController());
+  });
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
 
@@ -87,7 +93,7 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold
           ),
           iconTheme: IconThemeData(
-            color: Colors.black
+            color: Color(xMainColor)
           ),
         ),
       ),

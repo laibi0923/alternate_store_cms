@@ -8,14 +8,14 @@ class AuthController extends GetxController{
   static AuthController instance = Get.find();
 
   FirebaseAuth auth = FirebaseAuth.instance;
-  late Rx<User?> user;
+  late Rx<User?> user = Rx<User?>(auth.currentUser);
   late Rx<UserModel?> userModel = Rx(UserModel());
   // final googleSignIn = GoogleSignIn();
 
   @override
   void onReady() {
     super.onReady();
-    user = Rx<User?>(auth.currentUser);
+    // user = Rx<User?>(auth.currentUser);
     user.bindStream(auth.userChanges());
     if(user.value != null){
       bindUserData();
