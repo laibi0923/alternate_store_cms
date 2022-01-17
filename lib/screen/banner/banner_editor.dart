@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:asher_store_cms/constants.dart';
 import 'package:asher_store_cms/controller/bannereditor_controller.dart';
-import 'package:asher_store_cms/custom_cachednetworkimage.dart';
-import 'package:asher_store_cms/customize_textfield.dart';
 import 'package:asher_store_cms/model/banner_model.dart';
+import 'package:asher_store_cms/widget/custom_cachednetworkimage.dart';
+import 'package:asher_store_cms/widget/customize_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';

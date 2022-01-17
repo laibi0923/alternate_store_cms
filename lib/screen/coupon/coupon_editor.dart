@@ -1,8 +1,8 @@
 import 'package:asher_store_cms/constants.dart';
 import 'package:asher_store_cms/controller/couponeditor_controller.dart';
-import 'package:asher_store_cms/currency_formatter.dart';
-import 'package:asher_store_cms/customize_textfield.dart';
 import 'package:asher_store_cms/model/coupon_model.dart';
+import 'package:asher_store_cms/widget/currency_formatter.dart';
+import 'package:asher_store_cms/widget/customize_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

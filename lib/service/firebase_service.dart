@@ -19,53 +19,8 @@ class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final uid = Get.find<AuthController>().auth.currentUser?.uid;
-  
-  //  取得用戶資料
-  Stream<UserModel> getUserInfo() {
-    // ignore: avoid_print
-    print("取得用戶資料 $uid");
-    return _firestore.collection('user').doc(uid).snapshots().map((list){
-      return UserModel.fromFirestore(list.data());
-    });
-  }
 
-  //  取得所有會員資料
-  Stream<List<UserModel>> get getAllMember {
-    return _firestore.collection('user').snapshots().map((list) => list.docs
-      .map((doc) => UserModel.fromFirestore(doc.data()))
-      .toList());
-  }
-
-  //  更新用戶資料
-  // Future updateUserInfo(UserModel userModel) {
-  //   return _firestore.collection('user').doc(uid).update({
-  //     'USERNAME': userModel.name,
-  //     'PHONE': userModel.phone,
-  //     'RECIPIENT_NAME': userModel.recipientName,
-  //     'UNIT_AND_BUILDING': userModel.unitAndBuilding,
-  //     'ESTATE': userModel.estate,
-  //     'DISTRICT': userModel.district,
-  //   });
-  // }
-
-  //  更新用戶頭像連結
-  // Future<void> setUserPhoto(String url) async {
-  //   return _firestore.collection('user').doc(uid).update({
-  //     'PHOTO' : url
-  //   });
-  // }
-
-  //  上存圖片
-  // Future<String> uploadImage(String path, File file) async {
-  //   Reference storageRef = FirebaseStorage.instance.ref().child(path);
-  //   final UploadTask uploadTask = storageRef.putFile(file);
-  //   final TaskSnapshot downloadUrl = (await uploadTask);
-  //   final String url = await downloadUrl.ref.getDownloadURL();
-  //   return url;
-  // }
-  
-
-
+  // ==========================================================================
   //  隨機生成英文數字    
   String randomStringGender(int chart, bool isString){
     var _chars = '';
@@ -87,10 +42,27 @@ class FirebaseService {
 
   // ==========================================================================
 
+  //  取得用戶資料
+  Stream<UserModel> getUserInfo() {
+    // ignore: avoid_print
+    print("取得用戶資料 $uid");
+    return _firestore.collection('user').doc(uid).snapshots().map((list){
+      return UserModel.fromFirestore(list.data());
+    });
+  }
+
+  //  取得所有會員資料
+  Stream<List<UserModel>> get getAllMember {
+    return _firestore.collection('user').snapshots().map((list) => list.docs
+      .map((doc) => UserModel.fromFirestore(doc.data()))
+      .toList());
+  }
+
+  // ==========================================================================
+
   //  取得所有貨品
   Stream<List<ProductModel>> get getProduct {
     return _firestore.collection('product')
-      // .where('INSTOCK', isEqualTo: true)
       .snapshots()
       .map((list) => list.docs
       .map((doc) => ProductModel.fromFirestore(doc.data()))
@@ -375,8 +347,7 @@ class FirebaseService {
   }
 
   // ==========================================================================
-
-
+  //  取得所有訂單
   Stream <List<OrderReceiveModel>> get getOrder{
     return _firestore
       .collection('order')
@@ -387,51 +358,8 @@ class FirebaseService {
       OrderReceiveModel.fromFirestore(doc.data(), doc.id)).toList());
   }
   
-  //  用戶下單
-  // Future takeOrder(OrderModel orderModel) async{
-
-  //   try{
-  //     DocumentReference xRef = FirebaseFirestore.instance.collection('user').doc(uid).collection('order').doc();
-  //     FirebaseFirestore.instance.runTransaction((transaction) async {
-  //       DocumentSnapshot snapshot = await transaction.get(xRef);
-  //       if(!snapshot.exists){
-  //         xRef.set({
-  //           'ORDER_DATE' : orderModel.orderDate,
-  //           'ORDER_NUMBER' : orderModel.orderNumber,
-  //           'DISCOUNT_CODE' : orderModel.discountCode,
-  //           'DISCOUNT_AMOUNT' : orderModel.discountAmount,
-  //           'SUB_AMOUNT' : orderModel.subAmount,
-  //           'SHIPPING_FREE' : orderModel.shippingAmount,
-  //           'TOTAL_AMOUNT' : orderModel.totalAmount,
-  //           'RECIPIENT_INFO' : orderModel.receipientInfo,
-  //           'ORDER_PRODUCT' : orderModel.orderProduct,
-  //           'PAYMENT_METHOD' : orderModel.paymentMothed
-  //         });
-  //       }
-  //     });
-
-  //     DocumentReference zRef = FirebaseFirestore.instance.collection('order').doc();
-  //     FirebaseFirestore.instance.runTransaction((transaction) async {
-  //       DocumentSnapshot snapshot = await transaction.get(zRef);
-  //       if(!snapshot.exists){
-  //         zRef.set({
-  //           'ORDER_DATE' : orderModel.orderDate,
-  //           'ORDER_NUMBER' : orderModel.orderNumber,
-  //           'REF' : xRef,
-  //           'AMOUNT' : orderModel.totalAmount,
-  //           'ISCOMPLETE' : false,
-  //         });
-  //       }
-  //     });
-      
-  //   }catch(e){
-  //     // ignore: avoid_print
-  //     print(e);
-  //   }
-  // }
   // ==========================================================================
-
-   //  
+  //  取得退貨商品
   Stream <List<RefundModel>> get getRefundList{
     return _firestore
       .collection('refund')
@@ -442,19 +370,20 @@ class FirebaseService {
       RefundModel.fromFirestore(doc.data(), doc.id)).toList());
   }
 
+  //  退貨批准
   void refundApproval(String docId, DocumentReference docRef, List productList){
 
-  //
-  _firestore.collection('refund').doc(docId).update({
-    'ISCOMPLETED' : true
-  });
-  
-  //dwdw
-  docRef.update({
-    'ORDER_PRODUCT' : productList,
-  });
+    //
+    _firestore.collection('refund').doc(docId).update({
+      'ISCOMPLETED' : true
+    });
+    
+    //  
+    docRef.update({
+      'ORDER_PRODUCT' : productList,
+    });
 
-}
+  }
 
   // ==========================================================================
 
@@ -467,6 +396,7 @@ class FirebaseService {
     .map((list) => PrivatePolicyModel.fromFirestore(list.data()!));
   }
 
+  //  更新用戶政策
   void updatePrivatePolicy(String content){
     _firestore.collection('policy').doc('private_policy').set({
       'LAST_MODIFY' : Timestamp.now(),
@@ -485,6 +415,7 @@ class FirebaseService {
     .map((list) => RefundPolicyModel.fromFirestore(list.data()!));
   }
 
+  //  更新退貨政策
   void updateReturnPolicy(String content){
     _firestore.collection('policy').doc('return_policy').set({
       'LAST_MODIFY' : Timestamp.now(),
@@ -492,41 +423,5 @@ class FirebaseService {
     });
   }
 
-  // ==========================================================================
-  
-
-
-
-  //  用戶退貨
-  Future makeRefund(RefundModel refundModel, String docid, List? productList) async{
-
-    try{
-
-      //  於 Order Histoty 修改 RefundStatus
-      DocumentReference xRef = FirebaseFirestore.instance.collection('user').doc(uid).collection('order').doc(docid);
-      FirebaseFirestore.instance.runTransaction((transaction) async {
-        xRef.update({
-          'ORDER_PRODUCT' : productList,
-        });
-      });
-
-
-      //  通知後台申請退款
-      DocumentReference zRef = FirebaseFirestore.instance.collection('refund').doc();
-      FirebaseFirestore.instance.runTransaction((transaction) async {
-        DocumentSnapshot snapshot = await transaction.get(zRef);
-        if(!snapshot.exists){
-          zRef.set({
-            'CREATE_DATE' : refundModel.createDate,
-            'REF' : xRef,
-          });
-        }
-      });
-      
-    }catch(e){
-      // ignore: avoid_print
-      print(e);
-    }
-  }
 
 }

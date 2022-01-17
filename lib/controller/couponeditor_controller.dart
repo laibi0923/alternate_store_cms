@@ -1,6 +1,6 @@
-import 'package:asher_store_cms/custom_snackbar.dart';
 import 'package:asher_store_cms/model/coupon_model.dart';
 import 'package:asher_store_cms/service/firebase_service.dart';
+import 'package:asher_store_cms/widget/custom_snackbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

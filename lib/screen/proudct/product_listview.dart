@@ -1,8 +1,8 @@
 import 'package:asher_store_cms/constants.dart';
 import 'package:asher_store_cms/controller/productlistview_controller.dart';
-import 'package:asher_store_cms/currency_textview.dart';
 import 'package:asher_store_cms/model/product_model.dart';
 import 'package:asher_store_cms/screen/proudct/product_editor.dart';
+import 'package:asher_store_cms/widget/currency_textview.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

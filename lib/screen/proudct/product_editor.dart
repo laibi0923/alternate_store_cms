@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:asher_store_cms/constants.dart';
 import 'package:asher_store_cms/controller/producteditor_controller.dart';
-import 'package:asher_store_cms/currency_formatter.dart';
-import 'package:asher_store_cms/custom_cachednetworkimage.dart';
-import 'package:asher_store_cms/customize_textfield.dart';
 import 'package:asher_store_cms/model/product_model.dart';
 import 'package:asher_store_cms/randomstring_gender.dart';
+import 'package:asher_store_cms/widget/currency_formatter.dart';
+import 'package:asher_store_cms/widget/custom_cachednetworkimage.dart';
+import 'package:asher_store_cms/widget/customize_textfield.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -1,7 +1,7 @@
 import 'package:asher_store_cms/constants.dart';
 import 'package:asher_store_cms/controller/auth_controller.dart';
 import 'package:asher_store_cms/controller/root_controller.dart';
-import 'package:asher_store_cms/customize_textfield.dart';
+import 'package:asher_store_cms/widget/customize_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
