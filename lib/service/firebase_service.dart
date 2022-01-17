@@ -431,7 +431,7 @@ class FirebaseService {
   // }
   // ==========================================================================
 
-   //  取得用戶政策
+   //  
   Stream <List<RefundModel>> get getRefundList{
     return _firestore
       .collection('refund')
@@ -439,8 +439,22 @@ class FirebaseService {
       .snapshots()
       .map((list) => 
       list.docs.map((doc) => 
-      RefundModel.fromFirestore(doc.data())).toList());
+      RefundModel.fromFirestore(doc.data(), doc.id)).toList());
   }
+
+  void refundApproval(String docId, DocumentReference docRef, List productList){
+
+  //
+  _firestore.collection('refund').doc(docId).update({
+    'ISCOMPLETED' : true
+  });
+  
+  //dwdw
+  docRef.update({
+    'ORDER_PRODUCT' : productList,
+  });
+
+}
 
   // ==========================================================================
 
@@ -479,6 +493,9 @@ class FirebaseService {
   }
 
   // ==========================================================================
+  
+
+
 
   //  用戶退貨
   Future makeRefund(RefundModel refundModel, String docid, List? productList) async{

@@ -211,7 +211,7 @@ class OrderDetails extends StatelessWidget {
                       const Spacer(),
 
                       //  Refund
-                      orderProductData['REFUND_ABLE'] == false ? Container() :
+                      orderProductData['REFUND_ABLE'] == true ? Container() :
                       const Align(
                         alignment: Alignment.centerRight,
                         child: Text(
@@ -337,10 +337,23 @@ class OrderDetails extends StatelessWidget {
         ),
 
         CartSummaryItemView(
-          title: orderModel.discountCode == '' ? '折扣' : '折扣 【$orderModel.discountCode】',
-          value: '-HKD\$ ${orderModel.discountAmount!.toStringAsFixed(2)}', 
-          isbold: false, 
-          showAddBox: false
+          title: '折扣', 
+          value: '-HKD\$ ' + orderModel.discountAmount!.toStringAsFixed(2),
+          isbold: false,
+          showAddBox: false,
+        ),
+
+        orderModel.discountCode!.isEmpty ? Container() :
+        Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10),
+          child: Row(
+            children: [
+              Text(
+                '優惠代碼【${orderModel.discountCode}】  ', 
+                style: const TextStyle(color: Colors.grey)
+              ),
+            ],
+          ),
         ),
 
         CartSummaryItemView(

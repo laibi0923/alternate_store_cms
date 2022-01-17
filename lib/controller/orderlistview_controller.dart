@@ -31,6 +31,7 @@ class OrderListViewController extends GetxController{
     searchTextController.dispose();
   }
 
+  //   檢查是否已完成出貨
   List checkNotComplete(){
     List notCompleteOrderList = [];
     for(int i = 0; i < orderlist.length; i++){
@@ -41,6 +42,7 @@ class OrderListViewController extends GetxController{
     return notCompleteOrderList;
   }
 
+  //  搜尋訂單
   void searchOrder(String val){
     searchResultList.clear();
     if(val.isNotEmpty) {
@@ -53,13 +55,14 @@ class OrderListViewController extends GetxController{
     }  
   }
 
+  //  清除搜尋記錄
   void clearSearchData(String val){
     if(val.isEmpty){
       searchResultList.clear();
     }
   }
 
-
+  //  組合貨品名稱
   String combineProductName(OrderModel orderModel){
     List combineProductNameString = [];
     for(int i = 0 ; i < orderModel.orderProduct!.length; i++){
@@ -68,9 +71,11 @@ class OrderListViewController extends GetxController{
     return combineProductNameString.toString().replaceAll('[', '').replaceAll(']', '');
   }
 
+  //  計算總收入
   void getIncome(){
 
     DateTime now = DateTime.now();
+    turnover.value = 0;
 
     for(int i = 0; i < orderlist.length; i++){
       if(

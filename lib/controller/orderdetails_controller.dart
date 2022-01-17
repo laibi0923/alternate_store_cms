@@ -1,4 +1,4 @@
-import 'package:asher_store_cms/comfirmation_dialog.dart';
+import 'package:asher_store_cms/widget/comfirmation_dialog.dart';
 import 'package:asher_store_cms/custom_snackbar.dart';
 import 'package:asher_store_cms/service/firebase_service.dart';
 import 'package:asher_store_cms/model/orderreceive_model.dart';
@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 
 class OrderDetailsController extends GetxController{
 
+  //  單件出貨
   Future<void> onShipping(int index, List dataList, OrderReceiveModel orderReceiveModel) async {
 
     if(dataList[index]['SHIPPING_STATUS'] == ''){
@@ -30,9 +31,8 @@ class OrderDetailsController extends GetxController{
       }
     }
   }
-
   
-
+  //  全部出貨
   void shippingAll(BuildContext context, List dataList, OrderReceiveModel orderReceiveModel){
     for(int i = 0; i < dataList.length; i++){
       updateDatabase(dataList, i, orderReceiveModel);
@@ -41,8 +41,10 @@ class OrderDetailsController extends GetxController{
     CustomSnackBar().show(Get.context!, '${orderReceiveModel.orderNumber} 出貨成功');
   }
 
+  //  更新資料庫
   void updateDatabase(List dataList, int index, orderReceiveModel){
-     List newDataList  = dataList;
+    
+    List newDataList  = dataList;
 
     newDataList[index].remove('SHIPPING_STATUS');
     newDataList[index].addAll({
@@ -71,6 +73,5 @@ class OrderDetailsController extends GetxController{
       });
     }
   }
-
 
 }
