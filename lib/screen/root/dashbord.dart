@@ -1,6 +1,8 @@
 import 'package:asher_store_cms/constants.dart';
 import 'package:asher_store_cms/controller/auth_controller.dart';
 import 'package:asher_store_cms/controller/orderlistview_controller.dart';
+import 'package:asher_store_cms/controller/refundlistview_controller.dart';
+import 'package:asher_store_cms/controller/root_controller.dart';
 import 'package:asher_store_cms/screen/banner/banner_listview.dart';
 import 'package:asher_store_cms/screen/category/catergory_listview.dart';
 import 'package:asher_store_cms/screen/coupon/coupon_listview.dart';
@@ -11,6 +13,7 @@ import 'package:asher_store_cms/screen/policy/private_policy.dart';
 import 'package:asher_store_cms/screen/policy/refund_policy.dart';
 import 'package:asher_store_cms/screen/proudct/product_listview.dart';
 import 'package:asher_store_cms/screen/refund/refund_listview.dart';
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -64,38 +67,42 @@ class DashBordPage extends GetWidget<AuthController> {
 
   Widget _customHeader(){
 
+    final _rootController = Get.find<RootPageController>();
     final _controller = Get.find<OrderListViewController>();
     final formatter = NumberFormat("###,###,###,##0", "en");
     
     return Obx((){
-    _controller.getIncome();
-      return SizedBox(
-        height: 100,
-        child: Center(
-          child: Column(
-            children: [
-              const Text(
-                '本日收益',
-                style: TextStyle(color: Color(xMainColor), fontSize: 18)
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'HKD\$${formatter.format(int.parse(_controller.turnover.toStringAsFixed(0)))}.',
-                    style: const TextStyle(fontSize: 30, color: Color(xMainColor))
-                  ),
-                  Text(
-                    _controller.turnover.toStringAsFixed(2).substring(
-                      _controller.turnover.toStringAsFixed(2).length - 2, 
-                      _controller.turnover.toStringAsFixed(2).length
+      _controller.getIncome(_rootController.validDate);
+      return GestureDetector(
+        onTap: () => _rootController.pickValidDate(),
+        child: SizedBox(
+          height: 100,
+          child: Center(
+            child: Column(
+              children: [
+                Text(
+                   _rootController.displayDate.value,
+                  style: const TextStyle(color: Color(xMainColor), fontSize: 18)
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'HKD\$${formatter.format(int.parse(_controller.turnover.toStringAsFixed(0)))}.',
+                      style: const TextStyle(fontSize: 30, color: Color(xMainColor))
                     ),
-                    style: const TextStyle(fontSize: 20, color: Color(xMainColor))
-                  ),
-                ],
-              ),
-            ],
+                    Text(
+                      _controller.turnover.toStringAsFixed(2).substring(
+                        _controller.turnover.toStringAsFixed(2).length - 2, 
+                        _controller.turnover.toStringAsFixed(2).length
+                      ),
+                      style: const TextStyle(fontSize: 20, color: Color(xMainColor))
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -161,18 +168,32 @@ class DashBordPage extends GetWidget<AuthController> {
           InkWell(
             splashColor: Colors.transparent,
             onTap: () => Get.to(() => const OrderListView()),
-            child: _functionButtonItemView(
-              const Icon(Icons.inbox_rounded, size: 30,), 
-              '訂單查詢'
-            ),
+            child: Obx((){
+              return  Badge(
+                position: const BadgePosition(bottom: -13),
+                badgeColor: const Color(xMainColor),
+                showBadge: Get.find<OrderListViewController>().showBadge(),
+                child: _functionButtonItemView(
+                  const Icon(Icons.inbox_rounded, size: 30,), 
+                  '訂單查詢'
+                ),
+              );
+            })
           ),
           InkWell(
             splashColor: Colors.transparent,
             onTap: () => Get.to(() => const RefundListView()),
-            child: _functionButtonItemView(
-              const Icon(Icons.autorenew, size: 30,), 
-              '退貨管理'
-            ),
+            child: Obx(() {
+              return Badge(
+                position: const BadgePosition(bottom: -13),
+                badgeColor: const Color(xMainColor),
+                showBadge: Get.find<RefundListViewController>().showBadge(),
+                child: _functionButtonItemView(
+                  const Icon(Icons.autorenew, size: 30,), 
+                  '退貨管理'
+                ),
+              );
+            })
           ),
           InkWell(
             splashColor: Colors.transparent,

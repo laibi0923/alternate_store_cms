@@ -72,9 +72,11 @@ class OrderListViewController extends GetxController{
   }
 
   //  計算總收入
-  void getIncome(){
+  void getIncome(DateTime now){
 
-    DateTime now = DateTime.now();
+    print(now.day);
+
+    // DateTime now = DateTime.now();
     turnover.value = 0;
 
     for(int i = 0; i < orderlist.length; i++){
@@ -86,6 +88,20 @@ class OrderListViewController extends GetxController{
         turnover.value = turnover.value + orderlist[i].xtotalAmount;
       }
     }
+
+  }
+
+  bool showBadge(){
+    bool result = false;
+    for(int i = 0; i < orderlist.length; i++){
+      if(orderlist[i].isComplete == false){
+        result = true;
+        break;
+      } else {
+        result = false;
+      }
+    }
+    return result;
   }
 
 }

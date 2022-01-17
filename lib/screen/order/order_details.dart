@@ -1,6 +1,7 @@
 import 'package:asher_store_cms/constants.dart';
 import 'package:asher_store_cms/controller/orderdetails_controller.dart';
 import 'package:asher_store_cms/model/order_model.dart';
+import 'package:asher_store_cms/model/order_product_model.dart';
 import 'package:asher_store_cms/model/orderreceive_model.dart';
 import 'package:asher_store_cms/widget/cart_summary_itemview.dart';
 import 'package:asher_store_cms/widget/currency_textview.dart';
@@ -143,7 +144,10 @@ class OrderDetails extends StatelessWidget {
     );
   } 
 
-  Container _buildProductItemView(orderProductData){
+  Container _buildProductItemView(orderProductData1){
+
+    OrderProductModel _orderProductModel = OrderProductModel.fromFirestore(orderProductData1);
+
     return Container(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
       margin: const EdgeInsets.only(bottom: 20),
@@ -157,13 +161,26 @@ class OrderDetails extends StatelessWidget {
 
           Row(
             children: [
-              const Expanded(
-                child: Text('貨品編號')
+              const Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: Text('貨品編號'),
               ),
               Text(
-                orderProductData['PRODUCT_NO'],
+                _orderProductModel.productNo!,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                decoration: BoxDecoration(
+                  color: _orderProductModel.shippingStatus == "" ? Colors.transparent : Colors.greenAccent,
+                  borderRadius: BorderRadius.circular(999)
+                ),
+                child:  _orderProductModel.shippingStatus == "" ?
+                const Text('未出貨') :
+                Text(_orderProductModel.shippingStatus.toString()),
+              )
+
             ],
           ),
 
@@ -185,7 +202,7 @@ class OrderDetails extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: cachedNetworkImage(
-                      orderProductData['PRODUCT_IMAGE'],
+                      _orderProductModel.productImage!,
                       BoxFit.cover
                     )
                   ),
@@ -201,7 +218,7 @@ class OrderDetails extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 5),
                         child: Text(
-                          orderProductData['PRODUCT_NAME'],
+                          _orderProductModel.productName!,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -211,7 +228,7 @@ class OrderDetails extends StatelessWidget {
                       const Spacer(),
 
                       //  Refund
-                      orderProductData['REFUND_ABLE'] == true ? Container() :
+                      _orderProductModel.refundAble == true ? Container() :
                       const Align(
                         alignment: Alignment.centerRight,
                         child: Text(
@@ -226,7 +243,7 @@ class OrderDetails extends StatelessWidget {
                         children: [
                           // Product Color
                           Text(
-                            orderProductData['COLOR_NAME'],
+                            _orderProductModel.colorName!,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         
@@ -237,7 +254,7 @@ class OrderDetails extends StatelessWidget {
 
                           //  Product Size
                           Text(
-                            orderProductData['SIZE'],
+                            _orderProductModel.size!,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
 
@@ -248,9 +265,9 @@ class OrderDetails extends StatelessWidget {
                               children:  [
                                 
                                 // 判斷如商品冇特價時不顯示, 相反則顥示正價 (刪除線)
-                                orderProductData['DISCOUNT'] == 0 ? Container() :
+                                _orderProductModel.discount == 0 ? Container() :
                                 CurrencyTextView(
-                                  value: double.parse(orderProductData['PRICE'].toString()), 
+                                  value: double.parse(_orderProductModel.price.toString()), 
                                   textStyle: const TextStyle(
                                     fontSize: 11,
                                     decoration: TextDecoration.lineThrough
@@ -258,16 +275,16 @@ class OrderDetails extends StatelessWidget {
                                 ),
                                 
                                 //  判斷如商品冇特價時顯示正價, 相反以紅色顯示特價銀碼
-                                orderProductData['DISCOUNT'] != 0 ?
+                                _orderProductModel.discount != 0 ?
                                 CurrencyTextView(
-                                  value: double.parse(orderProductData['DISCOUNT'].toString()), 
+                                  value: double.parse(_orderProductModel.discount.toString()), 
                                   textStyle: const TextStyle(
                                     fontSize: 14,
                                     color: Colors.redAccent
                                   )
                                 ) :
                                 CurrencyTextView(
-                                  value: double.parse(orderProductData['PRICE'].toString()), 
+                                  value: double.parse(_orderProductModel.price.toString()), 
                                   textStyle: const TextStyle()
                                 )
                         
@@ -289,32 +306,15 @@ class OrderDetails extends StatelessWidget {
           Row(
             children: [
               const Expanded(
-                child: Text('出貨狀況')
-              ),
-              orderProductData['SHIPPING_STATUS'].isNotEmpty ? 
-              Text(
-                orderProductData['SHIPPING_STATUS'],
-                style: const TextStyle(color: Colors.greenAccent),
-              ) : 
-              const Text(
-                '未出貨',
-                style: TextStyle(color: Colors.redAccent),
-              )
-            ],
-          ),
-
-          Row(
-            children: [
-              const Expanded(
                 child: Text('出貨日期')
               ),
-              orderProductData['SHIPPING_DATE'] == null ? 
+              _orderProductModel.shippingDate == null ? 
               const Text(
                 '-',
               ) : 
               Text(
                 DateFormat('yyyy/MM/dd  kk:mm').format(
-                  DateTime.fromMicrosecondsSinceEpoch(orderProductData['SHIPPING_DATE'].microsecondsSinceEpoch)
+                  DateTime.fromMicrosecondsSinceEpoch(_orderProductModel.shippingDate!.microsecondsSinceEpoch)
                 )
               )
             ],

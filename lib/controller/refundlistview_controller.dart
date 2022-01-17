@@ -84,7 +84,6 @@ class RefundListViewController extends GetxController{
 
   }
 
-
   Future<void> refundReject(List dataList, int index, RefundModel refundModel) async {
     if(dataList[index]['REFUND_STATUS'] == '退貨申請中'){
       bool dialogResult = await showDialog(
@@ -117,6 +116,19 @@ class RefundListViewController extends GetxController{
         });
       } 
     }
+  }
+
+  bool showBadge(){
+    bool result = false;
+    for(int i = 0; i < refundList.length; i++){
+      if(refundList[i].isCompleted == false){
+        result = true;
+        break;
+      } else {
+        result = false;
+      }
+    }
+    return result;
   }
 
 }
